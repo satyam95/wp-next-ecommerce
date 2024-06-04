@@ -3,14 +3,14 @@ import { BannerCarousel } from "@/components/BannerCarousel";
 import CategoryRow from "@/components/CategoryRow";
 import FooterStrip from "@/components/FooterStrip";
 import { ProductsCarousel } from "@/components/ProductsCarousel";
-import { categoryItems, fearturedProductItems } from "@/constants/staticData";
+import { fearturedProductItems } from "@/constants/staticData";
 
 export default function Home() {
   return (
     <>
       <main>
         <BannerCarousel />
-        <CategoryRow categoryItems={categoryItems} />
+        <CategoryRow />
         <ProductsCarousel
           title="Featured Products"
           catSlug="featured-products"

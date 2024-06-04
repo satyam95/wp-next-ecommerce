@@ -1,12 +1,8 @@
+"use client";
 import React, { SVGProps } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-
-const navItems = [
-  { id: 1, name: "Home", href: "/" },
-  { id: 1, name: "Pages", href: "#" },
-  { id: 1, name: "Shop", href: "#" },
-];
+import Navigation from "./Navigation";
 
 export const Header = () => {
   return (
@@ -17,17 +13,7 @@ export const Header = () => {
             <Package2Icon className="h-6 w-6" />
             <span className="text-lg font-semibold">Acme Store</span>
           </Link>
-          <nav className="hidden lg:flex items-center gap-4 ml-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.id}
-                className="text-sm font-medium hover:underline underline-offset-4"
-                href={item.href}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <Navigation />
         </div>
         <div className="flex items-center gap-10">
           <div>
