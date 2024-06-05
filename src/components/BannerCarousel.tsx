@@ -3,11 +3,17 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
+import { useQuery } from "@apollo/client";
+import { GET_BANNER_CAROUSEL } from "@/apollo/queries/getBannerCarousel";
+import Image from "next/image";
+
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 export const BannerCarousel = () => {
+  const { data } = useQuery(GET_BANNER_CAROUSEL);
+  console.log(data?.bannerCarousels);
   return (
     <section>
       <div className="py-2 pb-8">
@@ -27,15 +33,23 @@ export const BannerCarousel = () => {
             modules={[Autoplay, Pagination, Navigation]}
             className="mySwiper"
           >
-            <SwiperSlide>
-              <div className="h-80 w-full bg-[#eaeaea] rounded-md"></div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="h-80 w-full bg-[#eaeaea] rounded-md"></div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="h-80 w-full bg-[#eaeaea] rounded-md"></div>
-            </SwiperSlide>
+            {data?.bannerCarousels.edges.length > 0 ? (
+              data?.bannerCarousels.edges.map((item: any) => (
+                <SwiperSlide key={item.node.featuredImage.id}>
+                  <Image
+                    src={item.node.featuredImage.node.sourceUrl}
+                    alt={
+                      item.node.featuredImage.node.altText || "Ad Banner"
+                    }
+                    width={1336}
+                    height={320}
+                    className="object-fit rounded-md"
+                  />
+                </SwiperSlide>
+              ))
+            ) : (
+              <p>No banners available</p>
+            )}
           </Swiper>
         </div>
       </div>

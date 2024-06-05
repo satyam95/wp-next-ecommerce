@@ -8,11 +8,12 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Image from "next/image";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS_BY_TAG } from "@/apollo/queries/getProductsByTag";
 
 type PropsType = {
   title: string;
   catSlug: string;
-  data: ItemPropsType[];
 };
 
 type ItemPropsType = {
@@ -22,7 +23,11 @@ type ItemPropsType = {
   price: number;
 };
 
-export const ProductsCarousel = ({ title, data, catSlug }: PropsType) => {
+export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
+  const { data } = useQuery(GET_PRODUCTS_BY_TAG, {
+    variables: { tagIn: [catSlug] },
+  });
+  // console.log(data.products.edges);
   return (
     <section className="w-full py-4 md:py-6 lg:py-8">
       <div className="container px-4 md:px-6">
@@ -32,7 +37,7 @@ export const ProductsCarousel = ({ title, data, catSlug }: PropsType) => {
           </h2>
           <Link
             className="inline-flex items-center justify-center h-9 px-4 rounded-md bg-gray-900 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
-            href={`category/${catSlug}`}
+            href={`product-tag/${catSlug}`}
           >
             View All
           </Link>
@@ -44,24 +49,33 @@ export const ProductsCarousel = ({ title, data, catSlug }: PropsType) => {
           navigation={true}
           modules={[Navigation]}
         >
-          {data.map((product) => (
-            <SwiperSlide key={product.id}>
-              <Link href={`product/${product.slug}`}>
+          {data?.products?.edges?.map((product: any) => (
+            <SwiperSlide key={product.node.id}>
+              <Link href={`product/${product.node.slug}`}>
                 <div className="p-2">
                   <Card>
                     <Image
-                      alt="Product Image"
+                      alt={
+                        product.node.image === null ||
+                        product.node.image.altText === ""
+                          ? "Product Image"
+                          : product.node.image.altText
+                      }
                       className="object-cover w-full aspect-square rounded-t-lg"
                       height={300}
-                      src="/placeholder.svg"
+                      src={
+                        product.node.image === null
+                          ? "/placeholder.svg"
+                          : product.node.image.sourceUrl
+                      }
                       width={300}
                     />
                     <CardContent className="p-4">
                       <h3 className="text-lg font-semibold tracking-tight">
-                        {product.name}
+                        {product.node.name}
                       </h3>
                       <p className="text-gray-500 dark:text-gray-400 mt-1">
-                        ${product.price}
+                        {product.node.regularPrice}
                       </p>
                     </CardContent>
                   </Card>
@@ -74,41 +88,3 @@ export const ProductsCarousel = ({ title, data, catSlug }: PropsType) => {
     </section>
   );
 };
-
-function ChevronLeftIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-}
