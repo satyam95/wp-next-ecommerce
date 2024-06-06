@@ -13,7 +13,6 @@ import "swiper/css/navigation";
 
 export const BannerCarousel = () => {
   const { data } = useQuery(GET_BANNER_CAROUSEL);
-  console.log(data?.bannerCarousels);
   return (
     <section>
       <div className="py-2 pb-8">
