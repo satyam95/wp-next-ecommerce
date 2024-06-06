@@ -34,7 +34,7 @@ export const BannerCarousel = () => {
           >
             {data?.bannerCarousels.edges.length > 0 ? (
               data?.bannerCarousels.edges.map((item: any) => (
-                <SwiperSlide key={item.node.featuredImage.id}>
+                <SwiperSlide key={item.node.id}>
                   <Image
                     src={item.node.featuredImage.node.sourceUrl}
                     alt={
@@ -42,6 +42,7 @@ export const BannerCarousel = () => {
                     }
                     width={1336}
                     height={320}
+                    priority
                     className="object-fit rounded-md"
                   />
                 </SwiperSlide>

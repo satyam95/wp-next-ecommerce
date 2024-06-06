@@ -5,7 +5,6 @@ import React, { SVGProps } from "react";
 
 const Navigation = () => {
   const { data } = useQuery(GET_MENUS);
-  console.log(data?.menu?.menuItems?.edges);
   return (
     <nav className="hidden lg:flex items-center gap-4 ml-8">
       <ul className="flex items-center gap-6">
@@ -28,7 +27,7 @@ const Navigation = () => {
               ) : (
                 <ul className="absolute z-10 top-0 left-0 mt-5 py-1 w-48 rounded-md bg-white shadow-lg hidden group-hover:block">
                   {item.node?.childItems?.edges.map((subitem: any) => (
-                    <li id={subitem.node.id} className="px-4 py-2 text-sm font-medium hover:bg-gray-100">
+                    <li key={subitem.node.id} className="px-4 py-2 text-sm font-medium hover:bg-gray-100">
                       <Link href={subitem.node.uri}>{subitem.node.label}</Link>
                     </li>
                   ))}

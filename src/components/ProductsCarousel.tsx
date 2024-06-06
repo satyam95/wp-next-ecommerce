@@ -27,7 +27,6 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
   const { data } = useQuery(GET_PRODUCTS_BY_TAG, {
     variables: { tagIn: [catSlug] },
   });
-  // console.log(data.products.edges);
   return (
     <section className="w-full py-4 md:py-6 lg:py-8">
       <div className="container px-4 md:px-6">

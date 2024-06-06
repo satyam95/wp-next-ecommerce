@@ -12,9 +12,9 @@ const AdsRow = () => {
         <div className="grid grid-cols-3 gap-4">
           {data?.homeBanners?.edges.map((item: any) => (
             <Image
-              key={item.node.bannerField.bannerimage.altText}
-              src={item.node.bannerField.bannerimage.sourceUrl}
-              alt={item.node.bannerField.bannerimage.altText || "Ad Banner 1"}
+              key={item?.node.bannerField.bannerimage.altText}
+              src={item?.node.bannerField.bannerimage.sourceUrl}
+              alt={item?.node.bannerField.bannerimage.altText || "Ad Banner 1"}
               height={745}
               width={555}
               className="object-cover w-full m-auto rounded-lg"
