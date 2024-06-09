@@ -1,5 +1,5 @@
+"use client";
 import ProductGallery from "@/components/ProductGallery";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,20 +11,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
+import { useQuery } from "@apollo/client";
 import Image from "next/image";
 import Link from "next/link";
 import { SVGProps } from "react";
+import { GET_PRODUCT } from "@/apollo/queries/getProduct";
+import { StarRating } from "@/components/StarRating";
+import ReviewCard from "@/components/ReviewCard";
 
-const images = [
-  "/placeholder.svg",
-  "/placeholder.svg",
-  "/placeholder.svg",
-  "/placeholder.svg",
-];
-
-export default function Category() {
+export default function Category({ params }: { params: { slug: string } }) {
+  const productSlug = params.slug;
+  const { data, loading, error } = useQuery(GET_PRODUCT, {
+    variables: { id: productSlug },
+  });
   return (
     <>
       <div className="container px-6 mx-auto py-12">
@@ -47,27 +46,25 @@ export default function Category() {
         </div>
         <div className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start">
           <div className="grid gap-4 md:gap-10 items-start">
-            <ProductGallery images={images} />
+            <ProductGallery images={data?.product?.galleryImages} />
           </div>
           <div className="grid gap-4 md:gap-10 items-start">
             <div className="grid gap-4">
               <h1 className="font-bold text-3xl lg:text-4xl">
-                Acme Prism T-Shirt
+                {data?.product?.name}
               </h1>
-              <div>
-                <p>60% combed ringspun cotton/40% polyester jersey tee.</p>
-              </div>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: data?.product?.shortDescription,
+                }}
+              />
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-0.5">
-                  <StarIcon className="w-5 h-5 fill-primary" />
-                  <StarIcon className="w-5 h-5 fill-primary" />
-                  <StarIcon className="w-5 h-5 fill-primary" />
-                  <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                  <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
+                  <StarRating rating={data?.product?.averageRating} />
                 </div>
               </div>
-              <div className="text-4xl font-bold">$99</div>
-              <div className="grid gap-4">
+              <div className="text-4xl font-bold">{data?.product?.price}</div>
+              {/* <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="color">Color</Label>
                   <RadioGroup
@@ -128,7 +125,7 @@ export default function Category() {
                     </Label>
                   </RadioGroup>
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                   <Button
@@ -163,27 +160,50 @@ export default function Category() {
                   <Button variant="outline">Check</Button>
                 </div>
               </div>
+              <div className="flex flex-col gap-2">
+                <div className="text-sm">SKU: {data?.product?.sku}</div>
+                <div className="text-sm flex gap-1">
+                  Categories:
+                  <ul className="flex gap-1">
+                    {data?.product?.productCategories?.edges.map(
+                      (category: any, index: number) => (
+                        <li key={category.node.id}>
+                          {category.node.name}
+                          {index <
+                            data.product.productCategories.edges.length - 1 &&
+                            ","}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+                <div className="text-sm flex gap-1">
+                  Tags:
+                  <ul className="flex gap-1">
+                    {data?.product?.productTags?.edges.map(
+                      (tag: any, index: number) => (
+                        <li key={tag.node.id}>
+                          {tag.node.name}
+                          {index < data.product.productTags.edges.length - 1 &&
+                            ","}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-span-2">
             <div className="grid gap-4 md:gap-10 items-start">
               <div className="grid gap-4">
                 <h2 className="font-bold text-2xl">Product Description</h2>
-                <div className="text-sm leading-loose text-gray-500 dark:text-gray-400">
-                  <p>
-                    {`The Acme Prism T-Shirt is a versatile and stylish addition
-                    to your wardrobe. Crafted from a blend of 60% combed
-                    ringspun cotton and 40% polyester, this tee offers a soft
-                    and breathable feel that's perfect for everyday wear.`}
-                  </p>
-                  <p>
-                    {`The unique prism design adds a modern touch to the classic
-                    t-shirt silhouette, making it a standout piece in your
-                    collection. Whether you're running errands or meeting up
-                    with friends, the Acme Prism T-Shirt is sure to become a
-                    go-to favorite.`}
-                  </p>
-                </div>
+                <div
+                  className="text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: data?.product?.description,
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -191,72 +211,19 @@ export default function Category() {
             <div>
               <h2 className="font-bold text-2xl mb-4">Reviews</h2>
               <div className="grid gap-6">
-                <div className="flex gap-4">
-                  <Avatar className="w-10 h-10 border">
-                    <AvatarImage alt="@shadcn" src="/placeholder-user.jpg" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="grid gap-0.5 text-sm">
-                        <h3 className="font-semibold">Sarah Johnson</h3>
-                        <time className="text-sm text-gray-500 dark:text-gray-400">
-                          2 days ago
-                        </time>
-                      </div>
-                      <div className="flex items-center gap-0.5 ml-auto">
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                        <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                      </div>
-                    </div>
-                    <div className="text-sm leading-loose text-gray-500 dark:text-gray-400">
-                      <p>
-                        {`I've been experimenting with my Acme Prism T-Shirt for a
-                        few weeks now, and it's been a versatile addition to my
-                        wardrobe. The fabric is soft and breathable, and the
-                        unique prism design adds a modern touch.`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <Avatar className="w-10 h-10 border">
-                    <AvatarImage alt="@shadcn" src="/placeholder-user.jpg" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="grid gap-0.5 text-sm">
-                        <h3 className="font-semibold">Alex Smith</h3>
-                        <time className="text-sm text-gray-500 dark:text-gray-400">
-                          3 weeks ago
-                        </time>
-                      </div>
-                      <div className="flex items-center gap-0.5 ml-auto">
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-primary" />
-                        <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                        <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                      </div>
-                    </div>
-                    <div className="text-sm leading-loose text-gray-500 dark:text-gray-400">
-                      <p>
-                        {`
-                        I've been experimenting with my Acme Prism T-Shirt for a
-                        few weeks now, and it's been a versatile addition to my
-                        wardrobe. The fabric is soft and breathable, and the
-                        unique prism design adds a modern touch.`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                {data?.product?.reviews?.edges.map((review: any) => (
+                  <ReviewCard
+                    key={review?.node?.id}
+                    avatarUrl={review?.node?.author?.node?.avatar?.url}
+                    authorName={review?.node?.author?.node?.name}
+                    postedDate={review?.node?.date}
+                    rating={review?.rating}
+                    reviewContent={review?.node?.content}
+                  />
+                ))}
               </div>
             </div>
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <h2 className="font-bold text-xl mb-4">Write a Review</h2>
               <form className="grid gap-4">
                 <div className="grid gap-2">
@@ -300,80 +267,34 @@ export default function Category() {
                   Submit Review
                 </Button>
               </form>
-            </div>
+            </div> */}
           </div>
           <div className="col-span-2">
             <div>
               <h2 className="font-bold text-2xl mb-4">Related Products</h2>
               <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="relative group">
-                  <Link className="absolute inset-0 z-10" href="#">
-                    <span className="sr-only">View</span>
-                  </Link>
-                  <Image
-                    alt="Related Product"
-                    className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
-                    height={300}
-                    src="/placeholder.svg"
-                    width={300}
-                  />
-                  <div className="flex-1 py-2">
-                    <h3 className="font-semibold tracking-tight">
-                      Acme Circles Tee
-                    </h3>
+                {data?.product?.related?.edges?.map((product: any) => (
+                  <div className="relative group" key={product.node.id}>
+                    <Link
+                      className="absolute inset-0 z-10"
+                      href={`/product/${product.node.slug}`}
+                    >
+                      <span className="sr-only">View</span>
+                    </Link>
+                    <Image
+                      alt={product.node.image.id}
+                      className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
+                      height={300}
+                      src={product.node.image.sourceUrl}
+                      width={300}
+                    />
+                    <div className="flex-1 py-2">
+                      <h3 className="font-semibold tracking-tight">
+                        {product.node.name}
+                      </h3>
+                    </div>
                   </div>
-                </div>
-                <div className="relative group">
-                  <Link className="absolute inset-0 z-10" href="#">
-                    <span className="sr-only">View</span>
-                  </Link>
-                  <Image
-                    alt="Related Product"
-                    className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
-                    height={300}
-                    src="/placeholder.svg"
-                    width={300}
-                  />
-                  <div className="flex-1 py-2">
-                    <h3 className="font-semibold tracking-tight">
-                      Acme Stripes Hoodie
-                    </h3>
-                  </div>
-                </div>
-                <div className="relative group">
-                  <Link className="absolute inset-0 z-10" href="#">
-                    <span className="sr-only">View</span>
-                  </Link>
-                  <Image
-                    alt="Related Product"
-                    className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
-                    height={300}
-                    src="/placeholder.svg"
-                    width={300}
-                  />
-                  <div className="flex-1 py-2">
-                    <h3 className="font-semibold tracking-tight">
-                      Acme Dots Joggers
-                    </h3>
-                  </div>
-                </div>
-                <div className="relative group">
-                  <Link className="absolute inset-0 z-10" href="#">
-                    <span className="sr-only">View</span>
-                  </Link>
-                  <Image
-                    alt="Related Product"
-                    className="rounded-lg object-cover w-full aspect-square group-hover:opacity-50 transition-opacity"
-                    height={300}
-                    src="/placeholder.svg"
-                    width={300}
-                  />
-                  <div className="flex-1 py-2">
-                    <h3 className="font-semibold tracking-tight">
-                      Acme Dots Joggers
-                    </h3>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -418,25 +339,6 @@ function PlusIcon(props: SVGProps<SVGSVGElement>) {
     >
       <path d="M5 12h14" />
       <path d="M12 5v14" />
-    </svg>
-  );
-}
-
-function StarIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
 }

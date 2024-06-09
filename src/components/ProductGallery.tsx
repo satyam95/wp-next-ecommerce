@@ -1,35 +1,44 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-interface ImagesType {
-  images: string[];
-}
+const ProductGallery = ({ images }: any) => {
+  const [mainImage, setMainImage] = useState(images?.edges[0] || null);
 
-const ProductGallery = ({ images }: ImagesType) => {
-  const [mainImage, setMainImage] = useState(images[0]);
+  useEffect(() => {
+    if (images?.edges.length > 0) {
+      setMainImage(images.edges[0]);
+    }
+  }, [images]);
+
+  if (!images?.edges || images.edges.length === 0) {
+    return <p>No images available</p>;
+  }
+
   return (
     <div className="flex gap-4">
-      <div className="w-32 flex flex-col gap-3">
-        {images.map((image, index) => (
+      <div className="w-32 flex flex-col gap-2">
+        {images?.edges.map((image: any) => (
           <Image
-            key={index}
-            src={image}
-            alt="image"
-            width={104}
-            height={104}
-            className="rounded-lg cursor-pointer"
+            key={image?.node?.id}
+            src={image?.node?.sourceUrl}
+            alt={image?.node?.id}
+            width={128}
+            height={128}
+            className="rounded-lg cursor-pointer object-cover aspect-square"
             onClick={() => setMainImage(image)}
           />
         ))}
       </div>
-      <Image
-        alt="Product Image"
-        className="grow aspect-square object-cover border border-gray-200 w-full rounded-lg overflow-hidden dark:border-gray-800"
-        height={300}
-        src={mainImage}
-        width={300}
-      />
+      {mainImage !== null && (
+        <Image
+          alt={`${mainImage?.node.id} main image`}
+          className="grow aspect-square border border-gray-200 rounded-lg object-cover overflow-hidden"
+          height={300}
+          src={mainImage?.node.sourceUrl}
+          width={300}
+        />
+      )}
     </div>
   );
 };

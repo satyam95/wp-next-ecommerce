@@ -1,3 +1,4 @@
+"use client";
 import ProductCard from "@/components/ProductCard";
 import {
   Breadcrumb,
@@ -7,23 +8,30 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { productPageData } from "@/constants/staticData";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS_BY_CATEGORY } from "@/apollo/queries/getProductsByCategory";
 
-export default function Category() {
+export default function Category({ params }: { params: { slug: string } }) {
+  const categorySlug = params.slug;
+  const { data, loading, error } = useQuery(GET_PRODUCTS_BY_CATEGORY, {
+    variables: { slug: [categorySlug] },
+  });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
   return (
     <>
       <main className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid gap-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight">
-              Summer Collection
+              {data?.productCategories?.edges[0].node.name}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
-              Discover the latest fashion trends for the season.
+              {data?.productCategories?.edges[0].node.description}
             </p>
           </div>
           <div className="grid md:grid-cols-[280px_1fr] gap-8">
@@ -115,15 +123,18 @@ export default function Category() {
                 </Breadcrumb>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {productPageData.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    title={product.name}
-                    description={product.description}
-                    slug={product.slug}
-                    price={product.price}
-                  />
-                ))}
+                {data?.productCategories?.edges[0].node.products.edges.map(
+                  (product: any) => (
+                    <ProductCard
+                      image={product.node.image}
+                      key={product.node.id}
+                      title={product.node.name}
+                      description={product.node.excerpt}
+                      slug={product.node.slug}
+                      price={product.node.price}
+                    />
+                  )
+                )}
               </div>
             </div>
           </div>
