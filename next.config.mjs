@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "wp-next-be.satyam95.tech",
+        hostname: "wpecom.satyam.works",
       },
     ],
   },
