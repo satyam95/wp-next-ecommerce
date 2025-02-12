@@ -3,9 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ApolloProvider } from "@apollo/client";
-import client from "@/lib/apollo-client";
 import Providers from "@/lib/apollo-client";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,15 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
-      <html lang="en">
-        <Providers>
+    <html lang="en">
+      <Providers>
         <body className={inter.className} suppressHydrationWarning={true}>
           <Header />
           {children}
           <Footer />
+          <Toaster position="top-right" />
         </body>
-        </Providers>
-      </html>
+      </Providers>
+    </html>
   );
 }
