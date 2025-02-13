@@ -4,10 +4,9 @@ export const GET_PRODUCT = gql`
   query GetProduct($id: ID!) {
     product(id: $id, idType: SLUG) {
       name
-      averageRating
       shortDescription
       description
-      type
+      averageRating
       sku
       productTags {
         edges {
@@ -36,20 +35,6 @@ export const GET_PRODUCT = gql`
           }
         }
       }
-      ... on VariableProduct {
-        id
-        name
-        salePrice
-        price
-        regularPrice
-      }
-      ... on SimpleProduct {
-        id
-        name
-        salePrice
-        price
-        regularPrice
-      }
       related(first: 4) {
         edges {
           node {
@@ -64,26 +49,21 @@ export const GET_PRODUCT = gql`
           }
         }
       }
-      reviews {
-        edges {
-          node {
-            id
-            content
-            date
-            author {
-              node {
-                email
-                id
-                name
-                avatar {
-                  url
-                }
-              }
-            }
-          }
-          rating
-        }
+      ... on SimpleProduct {
+        id
+        name
+        salePrice
+        price
+        regularPrice
       }
+      ... on VariableProduct {
+        id
+        name
+        salePrice
+        price
+        regularPrice
+      }
+      type
     }
   }
 `;

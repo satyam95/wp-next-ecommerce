@@ -207,23 +207,24 @@ export default function Category({ params }: { params: { slug: string } }) {
               </div>
             </div>
           </div>
-          <div className="col-span-2">
-            <div>
-              <h2 className="font-bold text-2xl mb-4">Reviews</h2>
-              <div className="grid gap-6">
-                {data?.product?.reviews?.edges.map((review: any) => (
-                  <ReviewCard
-                    key={review?.node?.id}
-                    avatarUrl={review?.node?.author?.node?.avatar?.url}
-                    authorName={review?.node?.author?.node?.name}
-                    postedDate={review?.node?.date}
-                    rating={review?.rating}
-                    reviewContent={review?.node?.content}
-                  />
-                ))}
+          {data?.product?.reviews?.edges.length > 0 && (
+            <div className="col-span-2">
+              <div>
+                <h2 className="font-bold text-2xl mb-4">Reviews</h2>
+                <div className="grid gap-6">
+                  {data?.product?.reviews?.edges.map((review: any) => (
+                    <ReviewCard
+                      key={review?.node?.id}
+                      avatarUrl={review?.node?.author?.node?.avatar?.url}
+                      authorName={review?.node?.author?.node?.name}
+                      postedDate={review?.node?.date}
+                      rating={review?.rating}
+                      reviewContent={review?.node?.content}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-            {/* <div className="mt-4">
+              {/* <div className="mt-4">
               <h2 className="font-bold text-xl mb-4">Write a Review</h2>
               <form className="grid gap-4">
                 <div className="grid gap-2">
@@ -268,7 +269,8 @@ export default function Category({ params }: { params: { slug: string } }) {
                 </Button>
               </form>
             </div> */}
-          </div>
+            </div>
+          )}
           <div className="col-span-2">
             <div>
               <h2 className="font-bold text-2xl mb-4">Related Products</h2>
