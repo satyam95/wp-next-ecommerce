@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { RESET_PASSWORD_MUTATION } from "@/apollo/mutations/resetPassword";
+import { toast } from "sonner";
 
 const usernameSchema = z.object({
   username: z.string().nonempty("Username is required."),
@@ -26,9 +26,6 @@ const usernameSchema = z.object({
 type UsernameSchema = z.infer<typeof usernameSchema>;
 
 export default function ForgetPassword() {
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
   const [resetPassword, { loading }] = useMutation(RESET_PASSWORD_MUTATION);
 
   const {
@@ -40,21 +37,18 @@ export default function ForgetPassword() {
   });
 
   const onSubmit = async (data: UsernameSchema) => {
-    setSuccessMessage("");
-    setErrorMessage("");
-
     try {
       const { data: mutationData } = await resetPassword({
         variables: { username: data.username },
       });
 
       if (mutationData.sendPasswordResetEmail.success) {
-        setSuccessMessage("Password reset link sent successfully!");
+        toast.success("Password reset link sent successfully!");
       } else {
-        setErrorMessage("Failed to send reset link. Please try again.");
+        toast.success("Failed to send reset link. Please try again.");
       }
     } catch (error) {
-      setErrorMessage("An error occurred. Please try again later.");
+      toast.success("An error occurred. Please try again later.");
     }
   };
 
@@ -64,8 +58,8 @@ export default function ForgetPassword() {
         <CardHeader>
           <CardTitle className="text-2xl">Forgot your password?</CardTitle>
           <CardDescription>
-            Please enter your username, and we'll email you a link to reset your
-            password.
+            Please enter your username, and we&apos;ll email you a link to reset
+            your password.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,12 +78,6 @@ export default function ForgetPassword() {
                 </p>
               )}
             </div>
-            {successMessage && (
-              <p className="text-green-600 text-sm">{successMessage}</p>
-            )}
-            {errorMessage && (
-              <p className="text-red-600 text-sm">{errorMessage}</p>
-            )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Sending..." : "Send reset link"}
             </Button>
