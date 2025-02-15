@@ -1,13 +1,6 @@
 "use client";
+
 import ProductGallery from "@/components/ProductGallery";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +11,7 @@ import { SVGProps } from "react";
 import { GET_PRODUCT } from "@/apollo/queries/getProduct";
 import { StarRating } from "@/components/StarRating";
 import ReviewCard from "@/components/ReviewCard";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default function Category({ params }: { params: { slug: string } }) {
   const productSlug = params.slug;
@@ -28,21 +22,7 @@ export default function Category({ params }: { params: { slug: string } }) {
     <>
       <div className="container px-6 mx-auto py-12">
         <div className="mb-4">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/shop">Shop</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Summer Collection</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <Breadcrumb />
         </div>
         <div className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start">
           <div className="grid gap-4 md:gap-10 items-start">

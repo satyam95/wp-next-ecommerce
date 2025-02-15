@@ -1,18 +1,12 @@
 "use client";
+
 import ProductCard from "@/components/ProductCard";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS_BY_CATEGORY } from "@/apollo/queries/getProductsByCategory";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default function Category({ params }: { params: { slug: string } }) {
   const categorySlug = params.slug;
@@ -106,21 +100,7 @@ export default function Category({ params }: { params: { slug: string } }) {
             </div>
             <div>
               <div className="mb-4">
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href="/shop">Shop</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Summer Collection</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
+                <Breadcrumb />
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {data?.productCategories?.edges[0].node.products.edges.map(
