@@ -9,7 +9,7 @@ export const Footer = () => {
           <div className="grid gap-4">
             <div className="flex items-center gap-2">
               <Package2Icon className="h-6 w-6" />
-              <span className="text-base font-semibold">Acme Store</span>
+              <span className="text-base font-semibold">Store</span>
             </div>
             <p className="text-gray-500 dark:text-gray-400">
               Beautifully designed components that you can copy and paste into

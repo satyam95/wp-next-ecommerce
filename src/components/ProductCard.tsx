@@ -6,14 +6,14 @@ import { truncateHTML } from "@/lib/truncate";
 
 type PropsType = {
   title: string;
-  description: string;
+  excerpt: string;
   price: number;
   slug: string;
   image: any;
 };
 
-const ProductCard = ({ title, description, price, slug, image }: PropsType) => {
-  const truncatedDescription = truncateHTML(description, 10);
+const ProductCard = ({ title, excerpt, price, slug, image }: PropsType) => {
+  const truncatedDescription = truncateHTML(excerpt, 10);
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <Link href={`/product/${slug}`}>
@@ -31,9 +31,11 @@ const ProductCard = ({ title, description, price, slug, image }: PropsType) => {
       </Link>
       <div className="p-4 space-y-2">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <div className="text-gray-500 dark:text-gray-400 text-sm">
-          {truncatedDescription}
-        </div>
+        {excerpt !== undefined && (
+          <div className="text-gray-500 dark:text-gray-400 text-sm">
+            {truncatedDescription}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <span className="font-semibold text-lg">{price}</span>
           <Button size="sm">Add to Cart</Button>
