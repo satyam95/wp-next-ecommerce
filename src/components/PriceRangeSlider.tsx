@@ -4,11 +4,40 @@ import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { Label } from "@/components/ui/label";
 
-export function PriceRangeSlider({ min, max }: { min: number; max: number }) {
-  const [values, setValues] = React.useState([min, max]);
+type PriceRangeSliderProps = {
+  min: number;
+  max: number;
+  initialMin?: number;
+  initialMax?: number;
+  onChange?: (min: number, max: number) => void;
+};
+
+export const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
+  min,
+  max,
+  initialMin,
+  initialMax,
+  onChange,
+}) => {
+  const [values, setValues] = React.useState<number[]>([
+    initialMin ?? min,
+    initialMax ?? max,
+  ]);
+
+  // If the initial values change, update the state.
+  React.useEffect(() => {
+    setValues([initialMin ?? min, initialMax ?? max]);
+  }, [initialMin, initialMax, min, max]);
 
   const formatPrice = (price: number) =>
     isNaN(price) ? "$0.00" : `$${price.toFixed(2)}`;
+
+  const handleValueChange = (newValues: number[]) => {
+    setValues(newValues);
+    if (onChange) {
+      onChange(newValues[0], newValues[1]);
+    }
+  };
 
   return (
     <div className="w-full max-w-sm space-y-4">
@@ -27,7 +56,7 @@ export function PriceRangeSlider({ min, max }: { min: number; max: number }) {
         max={max}
         step={1}
         value={values}
-        onValueChange={setValues}
+        onValueChange={handleValueChange}
         aria-label="Price range"
       >
         <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-secondary">
@@ -36,7 +65,7 @@ export function PriceRangeSlider({ min, max }: { min: number; max: number }) {
         {values.map((_, index) => (
           <SliderPrimitive.Thumb
             key={index}
-            className="block h-3 w-3 rounded-full bg-black focus:none"
+            className="block h-3 w-3 rounded-full bg-black focus:outline-none"
             aria-label={index === 0 ? "Minimum price" : "Maximum price"}
           />
         ))}
@@ -47,4 +76,4 @@ export function PriceRangeSlider({ min, max }: { min: number; max: number }) {
       </div>
     </div>
   );
-}
+};

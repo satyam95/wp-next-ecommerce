@@ -109,7 +109,7 @@ export default function Category({ params }: { params: { slug: string } }) {
                       image={product.node.image}
                       key={product.node.id}
                       title={product.node.name}
-                      description={product.node.excerpt}
+                      excerpt={product.node.excerpt}
                       slug={product.node.slug}
                       price={product.node.price}
                     />

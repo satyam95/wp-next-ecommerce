@@ -1,8 +1,32 @@
 import { gql } from "@apollo/client";
 
 export const GET_PRODUCTS = gql`
-  query GetProducts($first: Int, $after: String) {
-    products(first: $first, after: $after) {
+  query GetProducts(
+    $first: Int
+    $after: String
+    $categories: [String!]
+    $minPrice: Float
+    $maxPrice: Float
+    $sizes: [String!]
+    $colors: [String!]
+    $orderby: [ProductsOrderbyInput!]
+  ) {
+    products(
+      first: $first
+      after: $after
+      where: {
+        categoryIn: $categories
+        maxPrice: $maxPrice
+        minPrice: $minPrice
+        taxonomyFilter: {
+          filters: [
+            { taxonomy: PA_COLOR, terms: $colors }
+            { taxonomy: PA_SIZE, terms: $sizes }
+          ]
+        }
+        orderby: $orderby
+      }
+    ) {
       edges {
         cursor
         node {
@@ -39,14 +63,6 @@ export const GET_PRODUCTS = gql`
         startCursor
       }
       found
-    }
-    productCategories {
-      nodes {
-        id
-        count
-        name
-        slug
-      }
     }
   }
 `;

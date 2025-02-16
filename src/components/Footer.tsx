@@ -113,7 +113,7 @@ export const Footer = () => {
           </div>
         </div>
         <div className="container max-w-7xl mt-8 flex justify-center text-sm text-gray-500 dark:text-gray-400">
-          <p>© 2024 Acme Inc. All rights reserved.</p>
+          <p>© 2025 Store. All rights reserved.</p>
         </div>
       </div>
     </footer>
