@@ -1,9 +1,12 @@
 "use client";
 
+import { GET_MIN_MAX_PRICE } from "@/apollo/queries/getMinMaxPrice";
+import { GET_PRODUCT_ATTRIBUTES } from "@/apollo/queries/getProductAttributes";
+import { GET_PRODUCT_CATEGORIES } from "@/apollo/queries/getProductCategories";
 import { GET_PRODUCTS } from "@/apollo/queries/getProducts";
 import Pagination from "@/components/Pagination";
+import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 import ProductCard from "@/components/ProductCard";
-import { StarRating } from "@/components/StarRating";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@apollo/client";
@@ -24,6 +27,12 @@ export default function Shop() {
   const [globalTotalCount, setGlobalTotalCount] = useState<number | null>(null);
 
   const afterCursor = pageCursors[currentPage] ?? null;
+
+  const { data: productCategories } = useQuery(GET_PRODUCT_CATEGORIES);
+
+  const { data: productAttributes } = useQuery(GET_PRODUCT_ATTRIBUTES);
+
+  const { data: minMaxPrice } = useQuery(GET_MIN_MAX_PRICE);
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -89,20 +98,62 @@ export default function Shop() {
               <h3 className="text-lg font-semibold">Filters</h3>
               <div className="mt-4 space-y-4">
                 <div>
+                  <h4 className="text-base font-medium">Price Range</h4>
+                  <div className="mt-2">
+                    <PriceRangeSlider
+                      min={Number(minMaxPrice.minPrice.nodes[0].price) || 0}
+                      max={Number(minMaxPrice.maxPrice.nodes[0].price) || 100}
+                    />
+                  </div>
+                </div>
+                <div>
                   <h4 className="text-base font-medium">Categories</h4>
                   <div className="mt-2 space-y-2">
-                    {data.productCategories.nodes.map(
-                      (item: any) =>
-                        item.count > 0 && (
-                          <div className="flex items-center" key={item.id}>
-                            <Checkbox id={item.slug} />
-                            <Label className="ml-3" htmlFor={item.slug}>
-                              {item.name}{" "}
+                    {productCategories.productCategories.nodes.map(
+                      (item: any) => (
+                        <div className="flex items-center" key={item.id}>
+                          <Checkbox id={item.slug} />
+                          <Label className="ml-3" htmlFor={item.slug}>
+                            {item.name}
+                            {item.count > 0 && (
                               <span className="text-xs">({item.count})</span>
-                            </Label>
-                          </div>
-                        )
+                            )}
+                          </Label>
+                        </div>
+                      )
                     )}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-base font-medium">Sizes</h4>
+                  <div className="mt-2 space-y-2">
+                    {productAttributes.allPaSize.nodes.map((item: any) => (
+                      <div className="flex items-center" key={item.id}>
+                        <Checkbox id={item.slug} />
+                        <Label className="ml-3" htmlFor={item.slug}>
+                          {item.name}
+                          {item.count > 0 && (
+                            <span className="text-xs">({item.count})</span>
+                          )}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-base font-medium">Colors</h4>
+                  <div className="mt-2 space-y-2">
+                    {productAttributes.allPaColor.nodes.map((item: any) => (
+                      <div className="flex items-center" key={item.id}>
+                        <Checkbox id={item.slug} />
+                        <Label className="ml-3" htmlFor={item.slug}>
+                          {item.name}
+                          {item.count > 0 && (
+                            <span className="text-xs">({item.count})</span>
+                          )}
+                        </Label>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
