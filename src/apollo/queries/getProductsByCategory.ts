@@ -1,7 +1,16 @@
 import { gql } from "@apollo/client";
 
 export const GET_PRODUCTS_BY_CATEGORY = gql`
-query GetProductsByCategory($slug: [String]) {
+  query GetProductsByCategory(
+    $slug: [String!]
+    $first: Int
+    $after: String
+    $minPrice: Float
+    $maxPrice: Float
+    $sizes: [String!]
+    $colors: [String!]
+    $orderby: [ProductsOrderbyInput!]
+  ) {
     productCategories(where: { slug: $slug }) {
       edges {
         node {
@@ -9,12 +18,27 @@ query GetProductsByCategory($slug: [String]) {
           count
           name
           description
-          products(where: { categoryIn: $slug }) {
+          products(
+            first: $first
+            after: $after
+            where: {
+              categoryIn: $slug
+              minPrice: $minPrice
+              maxPrice: $maxPrice
+              taxonomyFilter: {
+                filters: [
+                  { taxonomy: PA_COLOR, terms: $colors }
+                  { taxonomy: PA_SIZE, terms: $sizes }
+                ]
+              }
+              orderby: $orderby
+            }
+          ) {
             edges {
+              cursor
               node {
                 id
                 name
-                type
                 slug
                 excerpt
                 image {
@@ -36,6 +60,12 @@ query GetProductsByCategory($slug: [String]) {
                   regularPrice
                 }
               }
+            }
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              endCursor
+              startCursor
             }
           }
         }

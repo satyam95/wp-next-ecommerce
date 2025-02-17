@@ -236,9 +236,6 @@ function Shop() {
                           />
                           <Label className="ml-3" htmlFor={item.slug}>
                             {item.name}
-                            {item.count > 0 && (
-                              <span className="text-xs">({item.count})</span>
-                            )}
                           </Label>
                         </div>
                       );
@@ -266,9 +263,6 @@ function Shop() {
                         />
                         <Label className="ml-3" htmlFor={item.slug}>
                           {item.name}
-                          {item.count > 0 && (
-                            <span className="text-xs">({item.count})</span>
-                          )}
                         </Label>
                       </div>
                     );
@@ -295,9 +289,6 @@ function Shop() {
                         />
                         <Label className="ml-3" htmlFor={item.slug}>
                           {item.name}
-                          {item.count > 0 && (
-                            <span className="text-xs">({item.count})</span>
-                          )}
                         </Label>
                       </div>
                     );
