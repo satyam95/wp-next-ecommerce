@@ -2,7 +2,7 @@
 
 import { useQuery } from "@apollo/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { GET_PRODUCT_CATEGORIES } from "@/apollo/queries/getProductCategories";
 import { GET_PRODUCT_ATTRIBUTES } from "@/apollo/queries/getProductAttributes";
@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function Shop() {
+function Shop() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
@@ -417,7 +417,7 @@ export default function Shop() {
                 />
               ))}
             </div>
-            {totalPages> 1 && (
+            {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -429,5 +429,13 @@ export default function Shop() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div>Loading Suspense...</div>}>
+      <Shop />
+    </Suspense>
   );
 }
