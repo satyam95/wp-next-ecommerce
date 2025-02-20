@@ -52,9 +52,13 @@ export const GET_PRODUCT = gql`
       ... on SimpleProduct {
         id
         name
+        onSale
+        regularPrice
         salePrice
         price
-        regularPrice
+        stockStatus
+        stockQuantity
+        soldIndividually
       }
       ... on VariableProduct {
         id

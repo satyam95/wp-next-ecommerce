@@ -9,7 +9,7 @@ import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
   uri: `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/graphql`,
-  // credentials: "include"
+  credentials: "include"
 });
 
 const authLink = setContext((_, { headers }) => {

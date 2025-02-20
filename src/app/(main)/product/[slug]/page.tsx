@@ -12,12 +12,20 @@ import { GET_PRODUCT } from "@/apollo/queries/getProduct";
 import { StarRating } from "@/components/StarRating";
 import ReviewCard from "@/components/ReviewCard";
 import Breadcrumb from "@/components/Breadcrumb";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { GET_PRODUCT_ATTRIBUTES_BY_PRODUCT } from "@/apollo/queries/getProductAttributesByProduct";
 
 export default function Category({ params }: { params: { slug: string } }) {
   const productSlug = params.slug;
   const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { id: productSlug },
   });
+  const { data: productAttributes } = useQuery(
+    GET_PRODUCT_ATTRIBUTES_BY_PRODUCT,
+    {
+      variables: { id: productSlug },
+    }
+  );
   return (
     <>
       <div className="container px-6 mx-auto py-12">
@@ -44,69 +52,31 @@ export default function Category({ params }: { params: { slug: string } }) {
                 </div>
               </div>
               <div className="text-4xl font-bold">{data?.product?.price}</div>
-              {/* <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="color">Color</Label>
-                  <RadioGroup
-                    className="flex items-center gap-2"
-                    defaultValue="black"
-                    id="color"
-                  >
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="color-black"
-                    >
-                      <RadioGroupItem id="color-black" value="black" />
-                      Black
-                    </Label>
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="color-white"
-                    >
-                      <RadioGroupItem id="color-white" value="white" />
-                      White
-                    </Label>
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="color-blue"
-                    >
-                      <RadioGroupItem id="color-blue" value="blue" />
-                      Blue
-                    </Label>
-                  </RadioGroup>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="size">Size</Label>
-                  <RadioGroup
-                    className="flex items-center gap-2"
-                    defaultValue="medium"
-                    id="size"
-                  >
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="size-small"
-                    >
-                      <RadioGroupItem id="size-small" value="small" />
-                      Small
-                    </Label>
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="size-medium"
-                    >
-                      <RadioGroupItem id="size-medium" value="medium" />
-                      Medium
-                    </Label>
-                    <Label
-                      className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
-                      htmlFor="size-large"
-                    >
-                      <RadioGroupItem id="size-large" value="large" />
-                      Large
-                    </Label>
-                  </RadioGroup>
-                </div>
-              </div> */}
-              <div className="flex flex-col gap-4">
+              <div className="grid gap-4">
+                {productAttributes?.product?.attributes?.nodes.map(
+                  (attribute: any) => (
+                    <div className="grid gap-2" key={attribute.id}>
+                      <Label htmlFor={attribute.name}>{attribute.label}</Label>
+                      <RadioGroup
+                        className="flex flex-wrap items-center gap-2"
+                        id={attribute.name}
+                      >
+                        {attribute.terms.nodes.map((term: any) => (
+                          <Label
+                            key={term.id}
+                            className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
+                            htmlFor={term.id}
+                          >
+                            <RadioGroupItem id={term.id} value={term.slug} />
+                            {term.name}
+                          </Label>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  )
+                )}
+              </div>
+              {!data?.product?.soldIndividually && (
                 <div className="flex items-center gap-2">
                   <Button
                     className="w-8 h-8 p-0 flex items-center justify-center"
@@ -122,11 +92,19 @@ export default function Category({ params }: { params: { slug: string } }) {
                     <PlusIcon className="h-4 w-4" />
                   </Button>
                 </div>
+              )}
+              <div className="flex flex-col gap-4">
                 <div className="flex gap-8">
-                  <Button size="lg">Add to cart</Button>
-                  <Button size="lg" variant="outline">
-                    Buy Now
-                  </Button>
+                  {data?.product?.stockStatus === "IN_STOCK" ? (
+                    <>
+                      <Button size="lg">Add to cart</Button>
+                      <Button size="lg" variant="outline">
+                        Buy Now
+                      </Button>
+                    </>
+                  ) : (
+                    <p>Out of stock</p>
+                  )}
                 </div>
               </div>
               <div className="grid gap-2 max-w-sm">
