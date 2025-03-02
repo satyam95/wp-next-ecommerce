@@ -1,5 +1,4 @@
 "use client";
-import { LOGIN_MUTATION } from "@/apollo/mutations/loginUser";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,8 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSessionActions } from "@/redux/useSessionActions";
 import { loginSchema } from "@/schemas/loginSchema";
-import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,27 +33,14 @@ export default function Login() {
     },
   });
 
-  const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
-
+  const { login, loading, error } = useSessionActions();
   const router = useRouter();
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data.username, data.password);
     try {
-      const response = await login({
-        variables: {
-          username: data.username,
-          password: data.password,
-        },
-      });
-      console.log(response);
-      if (response?.data?.login?.authToken) {
-        localStorage.setItem("authToken", response.data.login.authToken);
-        toast.success("Login successful!");
-        router.push("/");
-      } else {
-        throw new Error("Invalid login response.");
-      }
+      await login(data.username, data.password);
+      toast.success("Login successful!");
+      router.push("/");
     } catch (err) {
       if (err instanceof Error) {
         toast.error(err.message || "An error occurred.");

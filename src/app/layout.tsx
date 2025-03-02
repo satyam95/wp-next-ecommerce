@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import Providers from "@/lib/apollo-client";
 import { Toaster } from "sonner";
+import { ClientProviders } from "@/lib/ClientProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Providers>
+      <ClientProviders>
         <body className={inter.className} suppressHydrationWarning={true}>
           <Header />
           {children}
           <Footer />
           <Toaster position="top-right" />
         </body>
-      </Providers>
+      </ClientProviders>
     </html>
   );
 }
