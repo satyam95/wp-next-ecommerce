@@ -23,11 +23,11 @@ export const useSessionActions = () => {
         const { authToken, refreshToken, customer } = response.data.login;
         // Store tokens using environment variable keys.
         sessionStorage.setItem(
-          process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY!,
+          process.env.NEXT_PUBLIC_AUTH_TOKEN_SS_KEY!,
           authToken
         );
         localStorage.setItem(
-          process.env.NEXT_PUBLIC_REFRESH_TOKEN_KEY!,
+          process.env.NEXT_PUBLIC_REFRESH_TOKEN_LS_KEY!,
           refreshToken
         );
         sessionStorage.setItem(
