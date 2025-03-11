@@ -20,14 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ClientProviders>
-        <body className={inter.className} suppressHydrationWarning={true}>
+      <body className={inter.className} suppressHydrationWarning={true}>
+        <ClientProviders>
           <Header />
           {children}
           <Footer />
-          <Toaster position="top-right" />
-        </body>
-      </ClientProviders>
+        </ClientProviders>
+      </body>
     </html>
   );
 }

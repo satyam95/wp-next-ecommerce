@@ -3,6 +3,7 @@
 import { REFRESH_AUTH_TOKEN } from "@/apollo/mutations/refreshAuthToken";
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
   InMemoryCache,
   createHttpLink,
@@ -65,21 +66,25 @@ const fetchAuthToken = async (): Promise<string> => {
 };
 
 const hasCredentials = (): boolean => {
-  const authToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  const authToken = typeof window !== 'undefined' ? sessionStorage.getItem(AUTH_TOKEN_KEY) : null;
+  const refreshToken = typeof window !== 'undefined' ? localStorage.getItem(REFRESH_TOKEN_KEY) : null;
   return Boolean(authToken && refreshToken);
 };
 
 const getAuthToken = async (): Promise<string> => {
-  let authToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
+  let authToken = typeof window !== 'undefined' ? sessionStorage.getItem(AUTH_TOKEN_KEY) : null;
   if (!authToken) {
     authToken = await fetchAuthToken();
   }
-  return authToken;
+  return authToken || "";
 };
 
-const getSessionToken = (): string | null =>
-  sessionStorage.getItem(SESSION_TOKEN_KEY);
+const getSessionToken = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return sessionStorage.getItem(SESSION_TOKEN_KEY);
+  }
+  return null;
+};
 
 const httpLink = createHttpLink({
   uri: GRAPHQL_ENDPOINT,
@@ -98,15 +103,34 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-// Create the Apollo client instance.
+// Afterware to capture and store the session token from response headers
+const afterware = new ApolloLink((operation, forward) => {
+  return forward(operation).map(response => {
+    if (typeof window !== 'undefined') {
+      const context = operation.getContext();
+      const { response: { headers } } = context;
+      const session = headers.get("woocommerce-session");
+      if (session) {
+        if (session === "false") {
+          sessionStorage.removeItem(SESSION_TOKEN_KEY);
+        } else if (sessionStorage.getItem(SESSION_TOKEN_KEY) !== session) {
+          sessionStorage.setItem(SESSION_TOKEN_KEY, session);
+        }
+      }
+    }
+    return response;
+  });
+});
+
+// Create the Apollo client instance with authLink, afterware, and httpLink
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(afterware).concat(httpLink),
   cache: new InMemoryCache(),
 });
 
 // Providers component that wraps its children with ApolloProvider.
-const Providers = ({ children }: { children: React.ReactNode }) => (
+const ApolloClientProvider = ({ children }: { children: React.ReactNode }) => (
   <ApolloProvider client={client}>{children}</ApolloProvider>
 );
 
-export default Providers;
+export default ApolloClientProvider;

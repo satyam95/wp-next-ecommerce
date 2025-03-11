@@ -46,6 +46,10 @@ export const useSessionActions = () => {
   };
 
   const logout = () => {
+    // Clear tokens from storage for a complete logout
+    sessionStorage.removeItem(process.env.NEXT_PUBLIC_AUTH_TOKEN_SS_KEY!);
+    localStorage.removeItem(process.env.NEXT_PUBLIC_REFRESH_TOKEN_LS_KEY!);
+    sessionStorage.removeItem(process.env.NEXT_PUBLIC_SESSION_TOKEN_KEY!);
     dispatch(logoutAction());
   };
 

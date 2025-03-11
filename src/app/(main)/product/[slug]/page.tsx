@@ -7,15 +7,17 @@ import { Label } from "@/components/ui/label";
 import { useQuery } from "@apollo/client";
 import Image from "next/image";
 import Link from "next/link";
-import { SVGProps } from "react";
+import { SVGProps, useState } from "react";
 import { GET_PRODUCT } from "@/apollo/queries/getProduct";
 import { StarRating } from "@/components/StarRating";
 import ReviewCard from "@/components/ReviewCard";
 import Breadcrumb from "@/components/Breadcrumb";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { GET_PRODUCT_ATTRIBUTES_BY_PRODUCT } from "@/apollo/queries/getProductAttributesByProduct";
+import { useCartActions } from "@/redux/useCartActions";
 
 export default function Category({ params }: { params: { slug: string } }) {
+  const [quantity, setQuantity] = useState(1);
   const productSlug = params.slug;
   const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { id: productSlug },
@@ -26,6 +28,16 @@ export default function Category({ params }: { params: { slug: string } }) {
       variables: { id: productSlug },
     }
   );
+  const { addToCart, loading: cartLoading } = useCartActions();
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(data.product.databaseId, quantity);
+    } catch (error: any) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
   return (
     <>
       <div className="container px-6 mx-auto py-12">
@@ -81,13 +93,23 @@ export default function Category({ params }: { params: { slug: string } }) {
                   <Button
                     className="w-8 h-8 p-0 flex items-center justify-center"
                     variant="outline"
+                    onClick={() => {
+                      if (quantity > 1) {
+                        setQuantity(quantity - 1);
+                      }
+                    }}
                   >
                     <MinusIcon className="h-4 w-4" />
                   </Button>
-                  <div className="text-base font-medium">1</div>
+                  <div className="text-base font-medium">{quantity}</div>
                   <Button
                     className="w-8 h-8 p-0 flex items-center justify-center"
                     variant="outline"
+                    onClick={() => {
+                      if (quantity < data?.product?.stockQuantity) {
+                        setQuantity(quantity + 1);
+                      }
+                    }}
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>
@@ -97,7 +119,13 @@ export default function Category({ params }: { params: { slug: string } }) {
                 <div className="flex gap-8">
                   {data?.product?.stockStatus === "IN_STOCK" ? (
                     <>
-                      <Button size="lg">Add to cart</Button>
+                      <Button
+                        size="lg"
+                        onClick={handleAddToCart}
+                        disabled={cartLoading}
+                      >
+                        Add to cart
+                      </Button>
                       <Button size="lg" variant="outline">
                         Buy Now
                       </Button>

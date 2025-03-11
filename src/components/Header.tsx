@@ -22,6 +22,7 @@ import { Input } from "./ui/input";
 export const Header = () => {
   const dispatch = useAppDispatch();
   const { customer } = useAppSelector((state) => state.session);
+  const { contents } = useAppSelector((state) => state.cart);
   const isLoggedIn = !!customer;
 
   const handleLogout = () => {
@@ -55,9 +56,14 @@ export const Header = () => {
               </div>
             </div>
           </div>
-          <Link href="/cart">
+          <Link href="/cart" className="relative inline-flex items-center">
             <ShoppingCartIcon className="h-5 w-5" />
             <span className="sr-only">Cart</span>
+            {contents.itemCount > 0 && (
+          <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+            {contents.itemCount}
+          </span>
+        )}
           </Link>
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
