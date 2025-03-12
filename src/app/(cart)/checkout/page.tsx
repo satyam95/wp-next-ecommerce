@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 
-export default function Shipping() {
+export default function Checkout() {
   return (
     <>
       <div className="w-full max-w-2xl mx-auto px-4 py-12 md:px-6 md:py-16">

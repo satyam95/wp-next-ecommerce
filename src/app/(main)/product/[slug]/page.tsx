@@ -28,6 +28,7 @@ export default function Category({ params }: { params: { slug: string } }) {
       variables: { id: productSlug },
     }
   );
+  
   const { addToCart, loading: cartLoading } = useCartActions();
 
   const handleAddToCart = async () => {
