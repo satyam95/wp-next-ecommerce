@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "wpecom.satyam.works",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
 };

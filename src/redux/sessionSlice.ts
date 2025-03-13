@@ -1,4 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface Address {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  email: string;
+  phone: string;
+}
 
 export interface Customer {
   sessionToken: string;
@@ -7,6 +19,8 @@ export interface Customer {
   firstName: string;
   lastName: string;
   email: string;
+  shipping: Address;
+  billing: Address;
 }
 
 interface SessionState {
@@ -20,7 +34,7 @@ const initialState: SessionState = {
 };
 
 const sessionSlice = createSlice({
-  name: 'session',
+  name: "session",
   initialState,
   reducers: {
     // Sets the customer data.

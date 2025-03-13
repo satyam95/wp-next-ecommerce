@@ -12,6 +12,28 @@ export const LOGIN_MUTATION = gql`
         firstName
         lastName
         email
+        shipping {
+          firstName
+          lastName
+          address1
+          city
+          state
+          postcode
+          country
+          email
+          phone
+        }
+        billing {
+          firstName
+          lastName
+          address1
+          city
+          state
+          postcode
+          country
+          email
+          phone
+        }
       }
     }
   }
