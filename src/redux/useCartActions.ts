@@ -165,6 +165,7 @@ export const useCartActions = () => {
     removeItemFromCart,
     updateCartItemQty,
     clearCart,
+    refetch,
     loading:
       addToCartLoading ||
       removeItemsLoading ||

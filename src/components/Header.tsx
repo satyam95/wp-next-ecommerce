@@ -40,10 +40,6 @@ export const Header = () => {
           <Navigation />
         </div>
         <div className="flex items-center gap-6">
-          {/* <div>
-            <HeartIcon className="h-5 w-5" />
-            <span className="sr-only">Wishlist</span>
-          </div> */}
           <div className="relative w-full max-w-md mx-4">
             <div className="relative">
               <Input

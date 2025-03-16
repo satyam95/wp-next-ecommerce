@@ -19,31 +19,44 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useAppSelector } from "@/redux/hooks";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { CreditCard, Package, ShoppingBag, Truck } from "lucide-react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CheckoutSchema } from "@/schemas/checkoutSchema";
+import { CREATE_ORDER_MUTATION } from "@/apollo/mutations/createOrder";
+import { useRouter } from "next/navigation";
+import { useCartActions } from "@/redux/useCartActions";
 
 type CheckoutFormData = z.infer<typeof CheckoutSchema>;
 
 export default function Checkout() {
+  const router = useRouter();
+
+  const { clearCart, refetch } = useCartActions();
+
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+
   const { contents, total, totalTax, shippingTotal, subtotal } = useAppSelector(
     (state) => state.cart
   );
   const { customer } = useAppSelector((state) => state.session);
 
-  const { data: countriesData } = useQuery(GET_COUNTRIES);
+  // Skip fetching countries if cart is empty
+  const { data: countriesData } = useQuery(GET_COUNTRIES, {
+    skip: contents.nodes.length === 0,
+  });
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
@@ -55,7 +68,7 @@ export default function Checkout() {
         address1: customer?.shipping?.address1 || "",
         city: customer?.shipping?.city || "",
         state: customer?.shipping?.state || "",
-        zipCode: customer?.shipping?.postcode || "",
+        postcode: customer?.shipping?.postcode || "",
         country: customer?.shipping?.country || "",
       },
       billing: {
@@ -64,10 +77,10 @@ export default function Checkout() {
         address1: customer?.billing?.address1 || "",
         city: customer?.billing?.city || "",
         state: customer?.billing?.state || "",
-        zipCode: customer?.billing?.postcode || "",
+        postcode: customer?.billing?.postcode || "",
         country: customer?.billing?.country || "",
       },
-      paymentMethod: "stripe",
+      paymentMethod: "cod",
       sameAsShipping: false,
     },
   });
@@ -75,15 +88,16 @@ export default function Checkout() {
   const selectedShippingCountry = watch("shipping.country");
   const selectedBillingCountry = watch("billing.country");
 
+  // Skip fetching states if cart is empty or no country is selected
   const { data: shippingStatesData } = useQuery(GET_STATES, {
     variables: { country: selectedShippingCountry },
+    skip: !selectedShippingCountry || contents.nodes.length === 0,
   });
   const { data: billingStatesData } = useQuery(GET_STATES, {
     variables: { country: selectedBillingCountry },
+    skip: !selectedBillingCountry || contents.nodes.length === 0,
   });
 
-  // When a shipping country is selected and no states are available,
-  // automatically set shipping.state to "N/A"
   useEffect(() => {
     if (
       selectedShippingCountry &&
@@ -94,8 +108,6 @@ export default function Checkout() {
     }
   }, [selectedShippingCountry, shippingStatesData, setValue]);
 
-  // When a billing country is selected and no states are available,
-  // automatically set billing.state to "N/A"
   useEffect(() => {
     if (
       selectedBillingCountry &&
@@ -106,14 +118,58 @@ export default function Checkout() {
     }
   }, [selectedBillingCountry, billingStatesData, setValue]);
 
+  const [createOrder, { error }] = useMutation(CREATE_ORDER_MUTATION);
 
-  const onSubmit = (data: CheckoutFormData) => {
+  const onSubmit = async (data: CheckoutFormData) => {
+    setIsSubmittingOrder(true);
+
     if (data.sameAsShipping) {
       data.billing = { ...data.shipping };
     }
-    console.log("Order Submitted: ", data);
-    // TODO: call your order API endpoint here
+    try {
+      const variables: Record<string, any> = {
+        isPaid: false,
+        paymentMethod: data.paymentMethod,
+        billing: data.billing,
+        shipping: data.shipping,
+      };
+      const response = await createOrder({ variables });
+
+      if (response.data.checkout.result === "success") {
+        await clearCart();
+        await refetch();
+        const orderId = response.data.checkout.order.orderNumber;
+        router.push(`/thank-you?orderId=${orderId}`);
+      } else {
+        setError("root", {
+          message: "Order creation failed. Please try again.",
+        });
+        console.error("Order creation failed:", response.data.checkout);
+      }
+    } catch (err) {
+      setError("root", {
+        message: "An error occurred. Please try again.",
+      });
+      console.error("Error creating order:", err);
+    } finally {
+      setIsSubmittingOrder(false);
+    }
   };
+
+  // Display message if cart is empty
+  if (contents.nodes.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-xl font-semibold mb-4">Your cart is empty</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Please add products to your cart before checking out.
+          </p>
+          <Button onClick={() => router.push("/shop")}>Shop Now</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -266,15 +322,15 @@ export default function Checkout() {
                       </div>
                     )}
                     <div className="space-y-2">
-                      <Label htmlFor="shipping-zipCode">ZIP Code</Label>
+                      <Label htmlFor="shipping-postcode">ZIP Code</Label>
                       <Input
-                        id="shipping-zipCode"
+                        id="shipping-postcode"
                         placeholder="10001"
-                        {...register("shipping.zipCode")}
+                        {...register("shipping.postcode")}
                       />
-                      {errors.shipping?.zipCode && (
+                      {errors.shipping?.postcode && (
                         <p className="text-red-500 text-sm">
-                          {errors.shipping.zipCode.message}
+                          {errors.shipping.postcode.message}
                         </p>
                       )}
                     </div>
@@ -333,132 +389,140 @@ export default function Checkout() {
               </CardHeader>
               {!watch("sameAsShipping") && (
                 <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="billing-firstName">First Name</Label>
-                      <Input
-                        id="billing-firstName"
-                        placeholder="John"
-                        {...register("billing.firstName")}
-                      />
-                      {errors.billing?.firstName && (
-                        <p className="text-red-500 text-sm">
-                          {errors.billing.firstName.message}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="billing-lastName">Last Name</Label>
-                      <Input
-                        id="billing-lastName"
-                        placeholder="Doe"
-                        {...register("billing.lastName")}
-                      />
-                      {errors.billing?.lastName && (
-                        <p className="text-red-500 text-sm">
-                          {errors.billing.lastName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="billing-address">Street Address</Label>
-                    <Input
-                      id="billing-address"
-                      placeholder="123 Main St"
-                      {...register("billing.address1")}
-                    />
-                    {errors.billing?.address1 && (
-                      <p className="text-red-500 text-sm">
-                        {errors.billing.address1.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="billing-city">City</Label>
-                      <Input
-                        id="billing-city"
-                        placeholder="New York"
-                        {...register("billing.city")}
-                      />
-                      {errors.billing?.city && (
-                        <p className="text-red-500 text-sm">
-                          {errors.billing.city.message}
-                        </p>
-                      )}
-                    </div>
-                    {(!selectedBillingCountry ||
-                      (billingStatesData?.countryStates &&
-                        billingStatesData.countryStates.length > 0)) && (
+                  <div className="grid gap-6">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="billing-state">State</Label>
-                        <Select
-                          value={watch("billing.state")}
-                          onValueChange={(value) =>
-                            setValue("billing.state", value)
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select state" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {billingStatesData?.countryStates.map(
-                              (state: { name: string; code: string }) => (
-                                <SelectItem key={state.code} value={state.code}>
-                                  {state.name}
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectContent>
-                        </Select>
-                        {errors.billing?.state && (
+                        <Label htmlFor="billing-firstName">First Name</Label>
+                        <Input
+                          id="billing-firstName"
+                          placeholder="John"
+                          {...register("billing.firstName")}
+                        />
+                        {errors.billing?.firstName && (
                           <p className="text-red-500 text-sm">
-                            {errors.billing.state.message}
+                            {errors.billing.firstName.message}
                           </p>
                         )}
                       </div>
-                    )}
+                      <div className="space-y-2">
+                        <Label htmlFor="billing-lastName">Last Name</Label>
+                        <Input
+                          id="billing-lastName"
+                          placeholder="Doe"
+                          {...register("billing.lastName")}
+                        />
+                        {errors.billing?.lastName && (
+                          <p className="text-red-500 text-sm">
+                            {errors.billing.lastName.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                     <div className="space-y-2">
-                      <Label htmlFor="billing-zipCode">ZIP Code</Label>
+                      <Label htmlFor="billing-address">Street Address</Label>
                       <Input
-                        id="billing-zipCode"
-                        placeholder="10001"
-                        {...register("billing.zipCode")}
+                        id="billing-address"
+                        placeholder="123 Main St"
+                        {...register("billing.address1")}
                       />
-                      {errors.billing?.zipCode && (
+                      {errors.billing?.address1 && (
                         <p className="text-red-500 text-sm">
-                          {errors.billing.zipCode.message}
+                          {errors.billing.address1.message}
                         </p>
                       )}
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="billing-country">Country</Label>
-                    <Select
-                      value={watch("billing.country")}
-                      onValueChange={(value) =>
-                        setValue("billing.country", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countriesData?.shippingCountries.map(
-                          (country: { name: string; code: string }) => (
-                            <SelectItem key={country.code} value={country.code}>
-                              {country.name}
-                            </SelectItem>
-                          )
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="billing-city">City</Label>
+                        <Input
+                          id="billing-city"
+                          placeholder="New York"
+                          {...register("billing.city")}
+                        />
+                        {errors.billing?.city && (
+                          <p className="text-red-500 text-sm">
+                            {errors.billing.city.message}
+                          </p>
                         )}
-                      </SelectContent>
-                    </Select>
-                    {errors.billing?.country && (
-                      <p className="text-red-500 text-sm">
-                        {errors.billing.country.message}
-                      </p>
-                    )}
+                      </div>
+                      {(!selectedBillingCountry ||
+                        (billingStatesData?.countryStates &&
+                          billingStatesData.countryStates.length > 0)) && (
+                        <div className="space-y-2">
+                          <Label htmlFor="billing-state">State</Label>
+                          <Select
+                            value={watch("billing.state")}
+                            onValueChange={(value) =>
+                              setValue("billing.state", value)
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select state" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {billingStatesData?.countryStates.map(
+                                (state: { name: string; code: string }) => (
+                                  <SelectItem
+                                    key={state.code}
+                                    value={state.code}
+                                  >
+                                    {state.name}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                          {errors.billing?.state && (
+                            <p className="text-red-500 text-sm">
+                              {errors.billing.state.message}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="billing-postcode">ZIP Code</Label>
+                        <Input
+                          id="billing-postcode"
+                          placeholder="10001"
+                          {...register("billing.postcode")}
+                        />
+                        {errors.billing?.postcode && (
+                          <p className="text-red-500 text-sm">
+                            {errors.billing.postcode.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="billing-country">Country</Label>
+                      <Select
+                        value={watch("billing.country")}
+                        onValueChange={(value) =>
+                          setValue("billing.country", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countriesData?.shippingCountries.map(
+                            (country: { name: string; code: string }) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.code}
+                              >
+                                {country.name}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      {errors.billing?.country && (
+                        <p className="text-red-500 text-sm">
+                          {errors.billing.country.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               )}
@@ -544,31 +608,6 @@ export default function Checkout() {
                   <div className="flex items-center p-4 border rounded-lg">
                     <input
                       type="radio"
-                      id="stripe"
-                      value="stripe"
-                      {...register("paymentMethod")}
-                      defaultChecked
-                      className="h-4 w-4 border-gray-300"
-                    />
-                    <label htmlFor="stripe" className="ml-3 flex-1">
-                      <span className="font-medium">Pay with Card</span>
-                      <p className="text-sm text-gray-500">
-                        Secure payment via Stripe
-                      </p>
-                    </label>
-                    <div className="flex gap-2">
-                      <Image
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Stripe_Logo%2C_revised_2016.svg/2560px-Stripe_Logo%2C_revised_2016.svg.png"
-                        alt="Stripe"
-                        width={40}
-                        height={20}
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center p-4 border rounded-lg">
-                    <input
-                      type="radio"
                       id="cod"
                       value="cod"
                       {...register("paymentMethod")}
@@ -582,13 +621,21 @@ export default function Checkout() {
                     </label>
                   </div>
                 </div>
+                {errors.root && (
+                  <p className="text-red-500 text-sm">{errors.root.message}</p>
+                )}
+                {error && (
+                  <p className="text-red-500 text-sm">
+                    {error.message || "An error occurred. Please try again."}
+                  </p>
+                )}
                 <Button
                   type="submit"
                   className="w-full"
                   size="lg"
-                  disabled={isSubmitting}
+                  disabled={isSubmittingOrder}
                 >
-                  {isSubmitting ? "Placing order.." : "Place Order"}
+                  {isSubmittingOrder ? "Placing order..." : "Place Order"}
                 </Button>
               </CardContent>
             </Card>
