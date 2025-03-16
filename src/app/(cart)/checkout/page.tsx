@@ -136,8 +136,10 @@ export default function Checkout() {
       const response = await createOrder({ variables });
 
       if (response.data.checkout.result === "success") {
+
         await clearCart();
         await refetch();
+        
         const orderId = response.data.checkout.order.orderNumber;
         router.push(`/thank-you?orderId=${orderId}`);
       } else {

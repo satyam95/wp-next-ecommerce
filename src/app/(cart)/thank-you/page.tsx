@@ -49,7 +49,7 @@ export default function ThankYou() {
                   Order Processing
                 </p>
                 <p className="text-sm text-gray-500">
-                  We'll notify you when your order has been shipped
+                  We&apos;ll notify you when your order has been shipped
                 </p>
               </div>
             </div>
