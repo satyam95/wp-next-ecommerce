@@ -5,8 +5,17 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle, Package, ShoppingBag, Truck } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function ThankYou() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ThankYouContent />
+    </Suspense>
+  );
+}
+
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
