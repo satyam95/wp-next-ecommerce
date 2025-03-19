@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_ORDER_STATUS = gql`
-  query GetOrderStatus($id: ID) {
-    order(id: $id, idType: DATABASE_ID) {
+  query GetOrderStatus($billingEmail: String!, $orderId: ID!) {
+    orderByIdAndEmail(billingEmail: $billingEmail, orderId: $orderId) {
       id
       orderNumber
       date
@@ -16,13 +16,11 @@ export const GET_ORDER_STATUS = gql`
           quantity
           total
           product {
-            node {
-              name
-              image {
-                altText
-                id
-                sourceUrl
-              }
+            name
+            image {
+              altText
+              id
+              sourceUrl
             }
           }
         }
@@ -32,10 +30,8 @@ export const GET_ORDER_STATUS = gql`
         address1
         city
         country
-        email
         firstName
         lastName
-        phone
         postcode
         state
       }

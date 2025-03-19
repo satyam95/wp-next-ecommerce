@@ -9,61 +9,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
+import { formatDate } from "@/lib/formatDate";
 
 interface orderProductType {
   id: string;
   quantity: number;
   total: string;
   product: {
-    node: {
-      name: string;
-      image: {
-        altText: string;
-        id: string;
-        sourceUrl: string;
-      };
+    name: string;
+    image: {
+      altText: string;
+      id: string;
+      sourceUrl: string;
     };
   };
 }
 
 export default function TrackOrder() {
   const [orderIdInput, setOrderIdInput] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [searchOrderId, setSearchOrderId] = useState<string | null>(null);
 
   const { loading, error, data } = useQuery(GET_ORDER_STATUS, {
-    variables: { id: searchOrderId! },
-    skip: searchOrderId === null,
+    variables: { orderId: searchOrderId!, billingEmail: email! },
+    skip: searchOrderId === null || email === null,
   });
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (orderIdInput.trim() !== "") {
+    if (orderIdInput.trim() !== "" && email.trim() !== "") {
       setSearchOrderId(orderIdInput);
+      setEmail(email);
     }
   };
 
-  function formatDate(isoDate: string): string {
-    const [year, month, day] = isoDate.split("T")[0].split("-");
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const monthName = months[parseInt(month, 10) - 1];
-    const dayNumber = parseInt(day, 10);
-    return `${monthName} ${dayNumber}, ${year}`;
-  }
-
-  console.log(error)
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -75,15 +54,22 @@ export default function TrackOrder() {
             Enter your order ID to track your order
           </p>
         </div>
-        <form onSubmit={handleSearch} className="flex gap-4 mb-8">
-          <Input
-            type="text"
-            placeholder="Enter your order ID"
-            className="flex-1"
-            value={orderIdInput}
-            onChange={(e) => setOrderIdInput(e.target.value)}
-          />
-          <Button type="submit" disabled={loading}>
+        <form onSubmit={handleSearch} className="space-y-4">
+          <div className="flex flex-col gap-2">
+            <Input
+              type="text"
+              placeholder="Enter your order ID"
+              value={orderIdInput}
+              onChange={(e) => setOrderIdInput(e.target.value)}
+            />
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5 mr-2" />
@@ -119,20 +105,20 @@ export default function TrackOrder() {
                   </p>
                 </div>
               )
-            ) : data && data.order ? (
+            ) : data && data.orderByIdAndEmail ? (
               <div className="space-y-6">
                 <Card>
                   <div className="flex items-center justify-between p-6">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">
-                        Order #{data.order.orderNumber}
+                        Order #{data.orderByIdAndEmail.orderNumber}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Placed on {formatDate(data.order.date)}
+                        Placed on {formatDate(data.orderByIdAndEmail.date)}
                       </p>
                     </div>
                     <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                      {data.order.status}
+                      {data.orderByIdAndEmail.status}
                     </div>
                   </div>
                 </Card>
@@ -142,7 +128,7 @@ export default function TrackOrder() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {data.order.lineItems.nodes.map(
+                      {data.orderByIdAndEmail.lineItems.nodes.map(
                         (product: orderProductType) => (
                           <div
                             className="flex items-center gap-4 pb-4"
@@ -150,15 +136,15 @@ export default function TrackOrder() {
                           >
                             <div className="relative w-20 h-20 rounded-lg overflow-hidden">
                               <Image
-                                src={product.product.node.image.sourceUrl}
-                                alt={product.product.node.image.altText}
+                                src={product.product.image.sourceUrl}
+                                alt={product.product.image.altText}
                                 fill
                                 className="object-cover"
                               />
                             </div>
                             <div className="flex-1">
                               <h3 className="font-medium text-gray-900">
-                                {product.product.node.name}
+                                {product.product.name}
                               </h3>
                               <p className="text-sm text-gray-500">
                                 Quantity: {product.quantity}
@@ -174,22 +160,24 @@ export default function TrackOrder() {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Subtotal:</span>
-                          <span>{data.order.subtotal}</span>
+                          <span>${data.orderByIdAndEmail.subtotal}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Shipping:</span>
                           <span className="text-green-600">
-                            {data.order.shippingTotal}
+                            ${data.orderByIdAndEmail.shippingTotal}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Payment method:</span>
-                          <span>{data.order.paymentMethodTitle}</span>
+                          <span>
+                            {data.orderByIdAndEmail.paymentMethodTitle}
+                          </span>
                         </div>
                         <Separator />
                         <div className="flex justify-between font-semibold">
                           <span>Total:</span>
-                          <span>{data.order.total}</span>
+                          <span>${data.orderByIdAndEmail.total}</span>
                         </div>
                       </div>
                     </div>
@@ -206,23 +194,23 @@ export default function TrackOrder() {
                           Delivery Address
                         </h3>
                         <p className="text-gray-600">
-                          {data.order.shipping.firstName}{" "}
-                          {data.order.shipping.lastName}
+                          {data.orderByIdAndEmail.shipping.firstName}{" "}
+                          {data.orderByIdAndEmail.shipping.lastName}
                           <br />
-                          {data.order.shipping.address1}
+                          {data.orderByIdAndEmail.shipping.address1}
                           <br />
-                          {data.order.shipping.city},{" "}
-                          {data.order.shipping.state} -{" "}
-                          {data.order.shipping.postcode}
+                          {data.orderByIdAndEmail.shipping.city},{" "}
+                          {data.orderByIdAndEmail.shipping.state} -{" "}
+                          {data.orderByIdAndEmail.shipping.postcode}
                           <br />
-                          {data.order.shipping.country}
+                          {data.orderByIdAndEmail.shipping.country}
                         </p>
                       </div>
                       <div>
                         <h3 className="font-medium text-gray-900 mb-2">
                           Shipping Method
                         </h3>
-                        {data.order.shippingLines.nodes.map(
+                        {data.orderByIdAndEmail.shippingLines.nodes.map(
                           (item: { id: string; methodTitle: string }) => (
                             <p className="text-gray-600" key={item.id}>
                               {item.methodTitle}

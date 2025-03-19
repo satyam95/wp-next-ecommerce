@@ -68,6 +68,12 @@ export const Footer = () => {
             >
               Contact
             </Link>
+            <Link
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+              href="/track-order"
+            >
+              Track order
+            </Link>
           </div>
           <div className="grid gap-2">
             <h3 className="font-semibold">Contact</h3>
