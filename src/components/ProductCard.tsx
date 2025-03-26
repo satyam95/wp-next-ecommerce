@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { truncateHTML } from "@/lib/truncate";
+import { Star } from "lucide-react";
 
 type PropsType = {
   title: string;
@@ -10,18 +11,26 @@ type PropsType = {
   price: number;
   slug: string;
   image: any;
+  rating?: number;
 };
 
-const ProductCard = ({ title, excerpt, price, slug, image }: PropsType) => {
+const ProductCard = ({
+  title,
+  excerpt,
+  price,
+  slug,
+  image,
+  rating,
+}: PropsType) => {
   const truncatedDescription = truncateHTML(excerpt, 10);
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <Link href={`/product/${slug}`}>
         <Image
-          alt={image.altText || "Product Image"}
+          alt={image?.altText || "Product Image"}
           className="w-full h-60 object-cover"
           height={300}
-          src={image.sourceUrl || "/placeholder.svg"}
+          src={image?.sourceUrl || "/placeholder.svg"}
           style={{
             aspectRatio: "400/300",
             objectFit: "cover",
@@ -37,8 +46,19 @@ const ProductCard = ({ title, excerpt, price, slug, image }: PropsType) => {
           </div>
         )}
         <div className="flex items-center justify-between">
-          <span className="font-semibold text-lg">{price}</span>
-          <Button size="sm">Add to Cart</Button>
+          {rating !== null && (
+            <div className="flex items-center gap-1">
+              <Star
+                className={`w-4 h-4 ${
+                  rating === 0
+                    ? "fill-gray-400 text-gray-400"
+                    : "fill-yellow-400 text-yellow-400"
+                }`}
+              />
+              <span className="text-sm">{rating}</span>
+            </div>
+          )}
+          <div className="font-semibold text-lg">{price}</div>
         </div>
       </div>
     </div>

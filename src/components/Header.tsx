@@ -18,6 +18,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
+import SearchBar from "./SearchBar";
 
 export const Header = () => {
   const dispatch = useAppDispatch();
@@ -40,26 +41,15 @@ export const Header = () => {
           <Navigation />
         </div>
         <div className="flex items-center gap-6">
-          <div className="relative w-full max-w-md mx-4">
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search..."
-                className="w-full pl-10 pr-4 py-2 rounded-md border"
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </div>
-          </div>
+          <SearchBar />
           <Link href="/cart" className="relative inline-flex items-center">
             <ShoppingCartIcon className="h-5 w-5" />
             <span className="sr-only">Cart</span>
             {contents.itemCount > 0 && (
-          <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
-            {contents.itemCount}
-          </span>
-        )}
+              <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                {contents.itemCount}
+              </span>
+            )}
           </Link>
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
