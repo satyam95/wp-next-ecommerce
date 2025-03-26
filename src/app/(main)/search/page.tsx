@@ -1,10 +1,10 @@
 "use client";
 
+import { Suspense, useMemo } from "react";
 import { GET_SEARCHED_PRODUCTS } from "@/apollo/queries/getSearchedProducts";
 import ProductCard from "@/components/ProductCard";
 import { useQuery } from "@apollo/client";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo } from "react";
 
 // Define types for better TypeScript support
 interface ProductNode {
@@ -32,18 +32,19 @@ function SearchResults() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams?.get("q") ?? "";
 
-  const { data, loading, error } = useQuery<ProductsData>(GET_SEARCHED_PRODUCTS, {
-    variables: {
-      first: 10,
-      search: searchQuery,
-    },
-    skip: !searchQuery,
-  });
+  const { data, loading, error } = useQuery<ProductsData>(
+    GET_SEARCHED_PRODUCTS,
+    {
+      variables: {
+        first: 10,
+        search: searchQuery,
+      },
+      skip: !searchQuery,
+    }
+  );
 
-  
   const products = useMemo(() => data?.products?.edges || [], [data]);
 
-  
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -52,7 +53,6 @@ function SearchResults() {
     );
   }
 
-  
   if (error) {
     return (
       <div className="text-center py-12">
@@ -67,7 +67,8 @@ function SearchResults() {
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold">No products found</h2>
         <p className="mt-2 text-gray-600">
-          Try adjusting your search term <b>{searchQuery}</b> to find what you&apos;re looking for.
+          Try adjusting your search term <b>{searchQuery}</b> to find what
+          you&apos;re looking for.
         </p>
       </div>
     );
@@ -81,7 +82,8 @@ function SearchResults() {
             Showing results for: {searchQuery}
           </h1>
           <p className="text-gray-600 mt-1">
-            {data?.products.found} product{data?.products.found !== 1 ? "s" : ""} found
+            {data?.products.found} product
+            {data?.products.found !== 1 ? "s" : ""} found
           </p>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -104,9 +106,7 @@ function SearchResults() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-    </div>}>
+    <Suspense fallback={<div>Loading....</div>}>
       <SearchResults />
     </Suspense>
   );

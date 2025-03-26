@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
-import { Input } from "./ui/input"; // Assuming this is your custom Input component
+import React, { useState, useCallback, Suspense } from "react";
+import { Input } from "./ui/input"; 
 import { Search, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const SearchBar: React.FC = () => {
+function SearchForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -60,4 +60,11 @@ const SearchBar: React.FC = () => {
   );
 };
 
-export default SearchBar;
+
+export default function SearchBar() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchForm />
+    </Suspense>
+  );
+}

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import Navigation from "./Navigation";
-import { HeartIcon, Package2Icon, ShoppingCartIcon } from "@/constants/icons";
+import { Package2Icon, ShoppingCartIcon } from "@/constants/icons";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout } from "@/redux/sessionSlice";
 import {
@@ -16,8 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Search } from "lucide-react";
-import { Input } from "./ui/input";
 import SearchBar from "./SearchBar";
 
 export const Header = () => {
