@@ -28,7 +28,7 @@ function Shop() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
-  const productsPerPage = 9;
+  const productsPerPage = 12;
 
   // Get filter values from URL (if any)
   const urlCategories = searchParams.get("category")

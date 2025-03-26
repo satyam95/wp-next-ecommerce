@@ -1,12 +1,18 @@
 import { gql } from "@apollo/client";
 
 export const GET_ORDERS = gql`
-  query GetOrders($first: Int, $after: String, $billingEmail: String) {
-    orders(
+  query GetOrders($first: Int, $after: String, $customerId: Int) {
+    ordersByCustomerId(
+      where: { customerId: $customerId }
       first: $first
       after: $after
-      where: { billingEmail: $billingEmail }
     ) {
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        hasPreviousPage
+      }
       edges {
         cursor
         node {
@@ -31,13 +37,9 @@ export const GET_ORDERS = gql`
                     id
                   }
                   ... on SimpleProduct {
-                    id
-                    name
                     price
                   }
                   ... on VariableProduct {
-                    id
-                    name
                     price
                   }
                 }
@@ -45,12 +47,6 @@ export const GET_ORDERS = gql`
             }
           }
         }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
       }
     }
   }

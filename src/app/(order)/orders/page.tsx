@@ -6,36 +6,162 @@ import { GET_ORDERS } from "@/apollo/queries/getOrders";
 import { useQuery } from "@apollo/client";
 import { formatDate } from "@/lib/formatDate";
 import { useAppSelector } from "@/redux/hooks";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+interface ProductImage {
+  altText: string;
+  sourceUrl: string;
+  id: string;
+}
+
+interface Product {
+  node: {
+    id: string;
+    name: string;
+    image: ProductImage;
+    price?: string;
+  };
+}
+
+interface LineItem {
+  id: string;
+  total: string;
+  quantity: number;
+  product: Product;
+}
+
+interface OrderNode {
+  id: string;
+  orderNumber: string;
+  date: string;
+  status: string;
+  total: string;
+  paymentMethodTitle: string;
+  lineItems: {
+    nodes: LineItem[];
+  };
+}
+
+interface PageInfo {
+  endCursor: string;
+  startCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface OrderEdge {
+  cursor: string;
+  node: OrderNode;
+}
+
+interface OrdersData {
+  ordersByCustomerId: {
+    pageInfo: PageInfo;
+    edges: OrderEdge[];
+  };
+}
+
+interface Customer {
+  databaseId: string;
+  billing: {
+    email: string;
+  };
+}
+
+interface RootState {
+  session: {
+    customer: Customer | null;
+  };
+}
+
+const Spinner = () => <div className="text-center py-10">Loading...</div>;
 
 export default function Orders() {
-  const [endCursor, setEndCursor] = useState("");
-  const postPerPage = 10;
-  const { customer } = useAppSelector((state) => state.session);
-  const { data, loading, error } = useQuery(GET_ORDERS, {
-    variables: {
-      first: postPerPage,
-      after: endCursor,
-      billingEmail: customer?.billing.email,
-    },
+  const { customer } = useAppSelector((state: RootState) => state.session);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+  const variables = {
+    first: 10,
+    customerId: customer?.databaseId,
+    after: null as string | null,
+  };
+
+  const { data, loading, error, fetchMore } = useQuery<OrdersData>(GET_ORDERS, {
+    variables,
+    notifyOnNetworkStatusChange: true,
+    skip: !customer?.databaseId,
   });
+
+  const handleLoadMore = async () => {
+    if (!data?.ordersByCustomerId.pageInfo.hasNextPage || loadingMore) return;
+
+    setLoadingMore(true);
+    try {
+      await fetchMore({
+        variables: {
+          first: 5,
+          customerId: customer?.databaseId,
+          after: data.ordersByCustomerId.pageInfo.endCursor,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+
+          return {
+            ordersByCustomerId: {
+              ...fetchMoreResult.ordersByCustomerId,
+              edges: [
+                ...prev.ordersByCustomerId.edges,
+                ...fetchMoreResult.ordersByCustomerId.edges,
+              ],
+              pageInfo: fetchMoreResult.ordersByCustomerId.pageInfo,
+            },
+          };
+        },
+      });
+    } catch (err) {
+      console.error("Error fetching more orders:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  if (loading && !data) {
+    return (
+      <div className="flex justify-center py-10">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500 text-center py-10">
+        Error: {error.message}
+      </div>
+    );
+  }
+
+  console.log(data);
+
+  if (!data?.ordersByCustomerId?.edges.length) {
+    return <div className="text-center py-10">No orders found.</div>;
+  }
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="sticky top-0 z-10 border-b bg-white dark:bg-gray-800">
         <div className="container">
           <div className="flex items-center justify-between py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold tracking-tight">Orders</h1>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight">Orders</h1>
           </div>
         </div>
       </div>
       <div className="container py-6">
         <div className="grid gap-4">
-          {data?.orders?.edges.map((order: any) => (
-            <Card key={order.id} className="overflow-hidden">
+          {data.ordersByCustomerId.edges.map((order) => (
+            <Card key={order.cursor} className="overflow-hidden">
               <Link href={`/order/${order.node.orderNumber}`}>
                 <CardContent className="p-6">
                   <div className="flex flex-col gap-4">
@@ -49,7 +175,7 @@ export default function Orders() {
                       </div>
                     </div>
                     <div className="grid gap-4">
-                      {order.node.lineItems.nodes.map((orderItem: any) => (
+                      {order.node.lineItems.nodes.map((orderItem) => (
                         <div
                           key={orderItem.id}
                           className="flex items-start gap-4 pb-4 border-b last:border-0 last:pb-0"
@@ -71,7 +197,7 @@ export default function Orders() {
                               Quantity: {orderItem.quantity}
                             </div>
                             <div className="text-sm font-medium">
-                              {orderItem.product.node.price} each
+                              {orderItem.product.node.price ?? "N/A"} each
                             </div>
                           </div>
                           <div className="text-right font-medium">
@@ -93,6 +219,17 @@ export default function Orders() {
               </Link>
             </Card>
           ))}
+          {data.ordersByCustomerId.pageInfo.hasNextPage && (
+            <div className="flex justify-center mt-4">
+              <Button
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="px-4 py-2 text-white rounded"
+              >
+                {loadingMore ? "Loading..." : "Load More"}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
