@@ -12,7 +12,7 @@ interface ProductNode {
   name: string;
   shortDescription: string;
   slug: string;
-  price: number;
+  price: string;
   averageRating: number;
   image: string;
 }

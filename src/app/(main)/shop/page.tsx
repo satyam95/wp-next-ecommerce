@@ -405,6 +405,7 @@ function Shop() {
                   excerpt={product.shortDescription}
                   slug={product.slug}
                   price={product.price}
+                  rating={product.averageRating}
                 />
               ))}
             </div>

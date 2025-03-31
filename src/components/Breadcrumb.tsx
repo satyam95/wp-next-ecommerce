@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import PropTypes from "prop-types";
 import { usePathname } from "next/navigation";
@@ -9,7 +11,10 @@ const Breadcrumb = () => {
   const pathnames = pathname.split("/").filter((x) => x);
 
   const formatLabel = (value: string): string => {
-    if (value.toLowerCase() === "category" || value.toLowerCase() === "product") {
+    if (
+      value.toLowerCase() === "category" ||
+      value.toLowerCase() === "product"
+    ) {
       return "Shop";
     }
     return value

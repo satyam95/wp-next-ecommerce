@@ -11,7 +11,7 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  hasNextPage = true,
+  hasNextPage,
 }) => {
   return (
     <div className="flex justify-center items-center space-x-2 mt-8">

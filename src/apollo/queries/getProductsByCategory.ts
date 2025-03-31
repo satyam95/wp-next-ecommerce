@@ -41,6 +41,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
                 name
                 slug
                 excerpt
+                averageRating
                 image {
                   altText
                   sourceUrl
@@ -66,6 +67,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
               hasPreviousPage
               endCursor
               startCursor
+              total
             }
           }
         }
