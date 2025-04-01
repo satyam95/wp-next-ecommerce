@@ -60,6 +60,7 @@ export const GET_PRODUCTS = gql`
         hasNextPage
         hasPreviousPage
         endCursor
+        total
         startCursor
       }
       found

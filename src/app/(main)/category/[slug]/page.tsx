@@ -1,13 +1,13 @@
-// pages/category/[slug]/page.tsx
 import { GET_PRODUCTS_BY_CATEGORY } from "@/apollo/queries/getProductsByCategory";
 import { GET_MIN_MAX_PRICE_BY_CATEGORY } from "@/apollo/queries/getMinMaxPriceByCategory";
 import { GET_PRODUCT_ATTRIBUTES_BY_CATEGORY } from "@/apollo/queries/getProductAttributesByCategory";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getServerApolloClient } from "@/lib/apollo-server";
-import FiltersClient from "./FiltersClient";
-import ProductsClient from "./ProductsClient";
 import { createMetadataFromSeo } from "@/lib/seoUtils";
 import { GET_PRODUCT_CATEGORY_SEO_DATA } from "@/apollo/queries/getProductCategorySeoData";
+import FiltersClient from "@/components/FiltersClient";
+import ProductsClient from "@/components/ProductsClient";
+
 
 export async function generateMetadata({
   params,
@@ -107,9 +107,9 @@ export default async function CategoryPage({
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-  const totalCount = categoryNode.products.pageInfo.total; // Assuming count reflects filtered total; adjust if schema provides products.totalCount
+  const totalCount = categoryNode.products.pageInfo.total; // Assuming count reflects filtered total
   const totalPages = Math.ceil(totalCount / productsPerPage);
-  
+
   // Extract filter attributes
   const sizeAttribute = attributesData?.productCategory?.allAttributes?.find(
     (attr: any) => attr.name.toLowerCase().includes("size")
@@ -117,6 +117,8 @@ export default async function CategoryPage({
   const colorAttribute = attributesData?.productCategory?.allAttributes?.find(
     (attr: any) => attr.name.toLowerCase().includes("color")
   );
+
+  console.log(sizeAttribute)
 
   return (
     <main className="container mx-auto px-4 md:px-6 py-12">
@@ -141,7 +143,7 @@ export default async function CategoryPage({
             currentColors={urlColors}
             currentMinPrice={urlMinPrice}
             currentMaxPrice={urlMaxPrice}
-            categorySlug={categorySlug}
+            // Note: categories and currentCategories are omitted here
           />
           {/* Main Content */}
           <div>
@@ -152,9 +154,13 @@ export default async function CategoryPage({
               products={products}
               totalPages={totalPages}
               currentPage={currentPage}
-              categorySlug={categorySlug}
               searchParams={searchParams}
               totalCount={totalCount}
+              currentSizes={urlSizes}
+              currentColors={urlColors}
+              currentMinPrice={urlMinPrice}
+              currentMaxPrice={urlMaxPrice}
+              // Note: currentCategories is omitted here
             />
           </div>
         </div>

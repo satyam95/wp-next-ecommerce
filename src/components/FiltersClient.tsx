@@ -1,4 +1,3 @@
-// pages/category/[slug]/FiltersClient.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,32 +6,33 @@ import { Label } from "@/components/ui/label";
 import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 
 interface FiltersClientProps {
+  categories?: { slug: string; name: string }[];
   sizeAttribute: any;
   colorAttribute: any;
   minPrice: number;
   maxPrice: number;
+  currentCategories?: string[];
   currentSizes: string[];
   currentColors: string[];
   currentMinPrice: number | undefined;
   currentMaxPrice: number | undefined;
-  categorySlug: string;
 }
 
 export default function FiltersClient({
+  categories,
   sizeAttribute,
   colorAttribute,
   minPrice,
   maxPrice,
+  currentCategories,
   currentSizes,
   currentColors,
   currentMinPrice,
   currentMaxPrice,
-  categorySlug,
 }: FiltersClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Helper to update URL query parameters
   const updateQueryParam = (param: string, value: string | null) => {
     const params = new URLSearchParams(Array.from(searchParams.entries()));
     if (value) {
@@ -40,8 +40,15 @@ export default function FiltersClient({
     } else {
       params.delete(param);
     }
-    params.set("page", "1"); // Reset to page 1 on filter change
-    router.push(`/category/${categorySlug}?${params.toString()}`);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`); // Adjust path as needed (e.g., /shop or /category/[slug])
+  };
+
+  const handleCategoryChange = (slug: string, checked: boolean) => {
+    const newCategories = checked
+      ? [...(currentCategories || []), slug]
+      : (currentCategories || []).filter((c) => c !== slug);
+    updateQueryParam("categories", newCategories.join(",") || null);
   };
 
   const handleSizeChange = (option: string, checked: boolean) => {
@@ -63,13 +70,35 @@ export default function FiltersClient({
     params.set("minPrice", newMin.toString());
     params.set("maxPrice", newMax.toString());
     params.set("page", "1");
-    router.push(`/category/${categorySlug}?${params.toString()}`);
+    router.push(`?${params.toString()}`);
   };
 
   return (
     <div className="bg-white dark:bg-gray-950 rounded-lg shadow-sm p-6 space-y-6">
       <h3 className="text-lg font-semibold">Filters</h3>
       <div className="mt-4 space-y-4">
+        {/* Category Filter (only if categories are provided) */}
+        {categories && categories.length > 0 && (
+          <div>
+            <h4 className="text-base font-medium">Categories</h4>
+            <div className="mt-2 space-y-2">
+              {categories.map((category) => (
+                <div className="flex items-center" key={category.slug}>
+                  <Checkbox
+                    id={`category-${category.slug}`}
+                    checked={currentCategories?.includes(category.slug) || false}
+                    onCheckedChange={(checked) =>
+                      handleCategoryChange(category.slug, checked as boolean)
+                    }
+                  />
+                  <Label className="ml-3" htmlFor={`category-${category.slug}`}>
+                    {category.name}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {/* Price Range Filter */}
         <div>
           <h4 className="text-base font-medium">Price Range</h4>
@@ -86,8 +115,8 @@ export default function FiltersClient({
         {/* Size Filter */}
         {sizeAttribute && (
           <div>
-            <h3 className="text-lg font-semibold">Sizes</h3>
-            <div className="mt-4 space-y-2">
+            <h4 className="text-base font-medium">Sizes</h4>
+            <div className="mt-2 space-y-2">
               {sizeAttribute.options.map((option: any) => (
                 <div className="flex items-center" key={option.name}>
                   <Checkbox
@@ -108,8 +137,8 @@ export default function FiltersClient({
         {/* Color Filter */}
         {colorAttribute && (
           <div>
-            <h3 className="text-lg font-semibold">Colors</h3>
-            <div className="mt-4 space-y-2">
+            <h4 className="text-base font-medium">Colors</h4>
+            <div className="mt-2 space-y-2">
               {colorAttribute.options.map((option: any) => (
                 <div className="flex items-center" key={option.name}>
                   <Checkbox
