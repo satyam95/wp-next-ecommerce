@@ -1,12 +1,10 @@
-"use client";
-
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import { GET_SEARCHED_PRODUCTS } from "@/apollo/queries/getSearchedProducts";
 import ProductCard from "@/components/ProductCard";
-import { useQuery } from "@apollo/client";
-import { useSearchParams } from "next/navigation";
+import { getServerApolloClient } from "@/lib/apollo-server";
+import { Metadata } from "next";
 
-// Define types for better TypeScript support
+// Define types
 interface ProductNode {
   id: string;
   name: string;
@@ -28,24 +26,54 @@ interface ProductsData {
   };
 }
 
-function SearchResults() {
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams?.get("q") ?? "";
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { q?: string };
+}): Promise<Metadata> {
+  const searchQuery = searchParams?.q ?? "";
 
-  const { data, loading, error } = useQuery<ProductsData>(
-    GET_SEARCHED_PRODUCTS,
-    {
-      variables: {
-        first: 10,
-        search: searchQuery,
-      },
-      skip: !searchQuery,
+  return {
+    title: searchQuery
+      ? `${searchQuery} - Search Results | Your Store Name`
+      : "Search Results | Your Store Name",
+    description: searchQuery
+      ? `Find ${searchQuery} products. Browse our selection of items matching your search query.`
+      : "Search our store for products. Find what you're looking for with our comprehensive search.",
+    openGraph: {
+      title: searchQuery ? `${searchQuery} - Search Results` : "Search Results",
+      description: searchQuery
+        ? `Explore products related to ${searchQuery}`
+        : "Search our product catalog",
+      type: "website",
+    },
+  };
+}
+
+async function SearchResults({ searchQuery }: { searchQuery: string }) {
+  let data: ProductsData | undefined;
+  let error: Error | undefined;
+
+  const client = getServerApolloClient();
+
+  if (searchQuery) {
+    try {
+      const result = await client.query<ProductsData>({
+        query: GET_SEARCHED_PRODUCTS,
+        variables: {
+          first: 10,
+          search: searchQuery,
+        },
+      });
+      data = result.data;
+    } catch (err) {
+      error = err instanceof Error ? err : new Error("An error occurred");
     }
-  );
+  }
 
-  const products = useMemo(() => data?.products?.edges || [], [data]);
+  const products = data?.products?.edges || [];
 
-  if (loading) {
+  if (!data && !error) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
@@ -62,7 +90,7 @@ function SearchResults() {
     );
   }
 
-  if (!products.length && !loading) {
+  if (!products.length) {
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold">No products found</h2>
@@ -104,10 +132,16 @@ function SearchResults() {
   );
 }
 
-export default function SearchPage() {
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: { q?: string };
+}) {
+  const searchQuery = searchParams?.q ?? "";
+
   return (
     <Suspense fallback={<div>Loading....</div>}>
-      <SearchResults />
+      <SearchResults searchQuery={searchQuery} />
     </Suspense>
   );
 }
