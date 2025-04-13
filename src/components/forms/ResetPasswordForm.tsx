@@ -40,12 +40,28 @@ export default function ResetPasswordForm() {
 
   const [setPassword, { loading }] = useMutation(SET_NEW_PASSWORD_MUTATION);
 
-  const onSubmit = async (data: NewPasswordSchema) => {
-    if (!key || !username) {
-      toast.error("Invalid or expired reset link. Please request a new one.");
-      return;
-    }
+  if (!key || !username) {
+    return (
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Invalid Reset Link</CardTitle>
+          <CardDescription>
+            This password reset link is invalid or has expired. Please request a new one.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => router.push("/forgot-password")}
+            className="w-full"
+          >
+            Request New Reset Link
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
+  const onSubmit = async (data: NewPasswordSchema) => {
     try {
       const response = await setPassword({
         variables: {
