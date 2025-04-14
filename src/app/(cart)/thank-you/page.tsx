@@ -1,23 +1,25 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle, Package, ShoppingBag, Truck } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Metadata } from "next";
 
-export default function ThankYou() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ThankYouContent />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = {
+  title: "Order Confirmation - Thank You",
+  description: "Thank you for your order. Your purchase has been confirmed and is being processed.",
+  openGraph: {
+    title: "Order Confirmation - Thank You",
+    description: "Thank you for your order. Your purchase has been confirmed and is being processed.",
+    type: "website",
+  },
+};
 
-function ThankYouContent() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+export default function ThankYou({
+  searchParams,
+}: {
+  searchParams: { orderId?: string };
+}) {
+  const orderId = searchParams.orderId;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -39,8 +41,7 @@ function ThankYouContent() {
             <div className="flex items-center space-x-3">
               <ShoppingBag className="h-6 w-6 text-gray-600" />
               <h2 className="text-xl font-semibold text-gray-900">
-                Order #{orderId || "Loading..."}{" "}
-                {/* Display orderId dynamically */}
+                Order #{orderId || "Loading..."}
               </h2>
             </div>
             <span className="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
