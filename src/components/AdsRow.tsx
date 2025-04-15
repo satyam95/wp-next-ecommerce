@@ -3,9 +3,15 @@ import { GET_ADS_BANNERS } from "@/apollo/queries/getAdsBanners";
 import { useQuery } from "@apollo/client";
 import Image from "next/image";
 import React from "react";
+import AdsRowSkeleton from "./skeleton/AdsRowSkeleton";
 
 const AdsRow = () => {
-  const { data } = useQuery(GET_ADS_BANNERS);
+  const { data, loading } = useQuery(GET_ADS_BANNERS);
+
+  if (loading) {
+    return <AdsRowSkeleton />;
+  }
+
   return (
     <section className="w-full py-4 md:py-6 lg:py-8">
       <div className="container px-4 md:px-6">

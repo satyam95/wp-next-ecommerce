@@ -10,6 +10,7 @@ import "swiper/css/navigation";
 import Image from "next/image";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS_BY_TAG } from "@/apollo/queries/getProductsByTag";
+import { ProductsCarouselSkeleton } from "./skeleton/ProductsCarouselSkeleton";
 
 type PropsType = {
   title: string;
@@ -24,9 +25,14 @@ type ItemPropsType = {
 };
 
 export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
-  const { data } = useQuery(GET_PRODUCTS_BY_TAG, {
+  const { data, loading } = useQuery(GET_PRODUCTS_BY_TAG, {
     variables: { tagIn: [catSlug] },
   });
+
+  if (loading) {
+    return <ProductsCarouselSkeleton />;
+  }
+
   return (
     <section className="w-full py-4 md:py-6 lg:py-8">
       <div className="container px-4 md:px-6">

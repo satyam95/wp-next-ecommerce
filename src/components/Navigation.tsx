@@ -2,9 +2,16 @@ import { GET_MENUS } from "@/apollo/queries/getMenus";
 import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import React, { SVGProps } from "react";
+import NavigationSkeleton from "./skeleton/NavigationSkeleton";
+import { ChevronsDownIcon } from "lucide-react";
 
 const Navigation = () => {
-  const { data } = useQuery(GET_MENUS);
+  const { data, loading } = useQuery(GET_MENUS);
+
+  if (loading) {
+    return <NavigationSkeleton />;
+  }
+
   return (
     <nav className="hidden lg:flex items-center gap-4 ml-8">
       <ul className="flex items-center gap-6">
@@ -19,7 +26,7 @@ const Navigation = () => {
                 {item.node?.childItems?.edges.length === 0 ? (
                   ""
                 ) : (
-                  <ChevronDownIcon className="h-4 w-4" />
+                  <ChevronsDownIcon className="h-4 w-4" />
                 )}
               </Link>
               {item.node?.childItems?.edges.length === 0 ? (
@@ -42,22 +49,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-
-function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}

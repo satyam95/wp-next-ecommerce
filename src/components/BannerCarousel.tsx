@@ -6,13 +6,19 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { useQuery } from "@apollo/client";
 import { GET_BANNER_CAROUSEL } from "@/apollo/queries/getBannerCarousel";
 import Image from "next/image";
+import { BannerCarouselSkeleton } from "./skeleton/BannerCarouselSkeleton";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 export const BannerCarousel = () => {
-  const { data } = useQuery(GET_BANNER_CAROUSEL);
+  const { data, loading } = useQuery(GET_BANNER_CAROUSEL);
+
+  if (loading) {
+    return <BannerCarouselSkeleton />;
+  }
+
   return (
     <section>
       <div className="py-2 pb-8">

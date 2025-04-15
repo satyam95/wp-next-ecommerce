@@ -3,6 +3,7 @@ import React from "react";
 import CategoryCard from "./CategoryCard";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_CATEGORIES } from "@/apollo/queries/getProductCategories";
+import CategoryRowSkeleton from "./skeleton/CategoryRowSkeleton";
 
 type Item = {
   id: string;
@@ -12,7 +13,14 @@ type Item = {
 };
 
 const CategoryRow = () => {
-  const { data } = useQuery(GET_PRODUCT_CATEGORIES);
+  const { data, loading } = useQuery(GET_PRODUCT_CATEGORIES);
+
+  if (loading) {
+    return (
+        <CategoryRowSkeleton />
+    );
+  }
+
   return (
     <section className="w-full py-4 md:py-6 lg:py-8">
       <div className="container px-4 md:px-6">
