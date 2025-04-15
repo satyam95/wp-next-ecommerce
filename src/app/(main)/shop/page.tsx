@@ -8,6 +8,8 @@ import FiltersClient from "@/components/FiltersClient";
 import ProductsClient from "@/components/ProductsClient";
 import { GET_PAGE_SEO_DATA } from "@/apollo/queries/getSeoData";
 import { createMetadataFromSeo } from "@/lib/seoUtils";
+import { Suspense } from "react";
+import { ShopPageSkeleton } from "@/components/skeleton/ShopPageSkeleton";
 
 const getOrderbyValue = (sort: string) => {
   switch (sort) {
@@ -121,46 +123,48 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   // console.log(`Products fetched: ${products.length}, Total: ${totalCount}, Cursor: ${endCursor}`);
 
   return (
-    <main className="container mx-auto px-4 md:px-6 py-12">
-      <div className="grid gap-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Browse our full range of products.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-[280px_1fr] gap-8">
-          <FiltersClient
-            categories={categories}
-            sizeAttribute={sizeAttribute}
-            colorAttribute={colorAttribute}
-            minPrice={Number(minMaxData?.minPrice?.nodes[0]?.price) || 0}
-            maxPrice={Number(minMaxData?.maxPrice?.nodes[0]?.price) || 100}
-            currentCategories={selectedCategories}
-            currentSizes={urlSizes}
-            currentColors={urlColors}
-            currentMinPrice={urlMinPrice}
-            currentMaxPrice={urlMaxPrice}
-          />
-          <div>
-            <div className="mb-4">
-              <Breadcrumb />
-            </div>
-            <ProductsClient
-              products={products}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              searchParams={searchParams}
-              totalCount={totalCount}
+    <Suspense fallback={<ShopPageSkeleton />}>
+      <main className="container mx-auto px-4 md:px-6 py-12">
+        <div className="grid gap-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
+              Browse our full range of products.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-[280px_1fr] gap-8">
+            <FiltersClient
+              categories={categories}
+              sizeAttribute={sizeAttribute}
+              colorAttribute={colorAttribute}
+              minPrice={Number(minMaxData?.minPrice?.nodes[0]?.price) || 0}
+              maxPrice={Number(minMaxData?.maxPrice?.nodes[0]?.price) || 100}
               currentCategories={selectedCategories}
               currentSizes={urlSizes}
               currentColors={urlColors}
               currentMinPrice={urlMinPrice}
               currentMaxPrice={urlMaxPrice}
             />
+            <div>
+              <div className="mb-4">
+                <Breadcrumb />
+              </div>
+              <ProductsClient
+                products={products}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                searchParams={searchParams}
+                totalCount={totalCount}
+                currentCategories={selectedCategories}
+                currentSizes={urlSizes}
+                currentColors={urlColors}
+                currentMinPrice={urlMinPrice}
+                currentMaxPrice={urlMaxPrice}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Suspense>
   );
 }

@@ -3,6 +3,7 @@ import { GET_SEARCHED_PRODUCTS } from "@/apollo/queries/getSearchedProducts";
 import ProductCard from "@/components/ProductCard";
 import { getServerApolloClient } from "@/lib/apollo-server";
 import { Metadata } from "next";
+import { SearchPageSkeleton } from "@/components/skeleton/SearchPageSkeleton";
 
 // Define types
 interface ProductNode {
@@ -140,7 +141,7 @@ export default async function SearchPage({
   const searchQuery = searchParams?.q ?? "";
 
   return (
-    <Suspense fallback={<div>Loading....</div>}>
+    <Suspense fallback={<SearchPageSkeleton />}>
       <SearchResults searchQuery={searchQuery} />
     </Suspense>
   );

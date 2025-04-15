@@ -41,6 +41,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
                 name
                 slug
                 excerpt
+                shortDescription
                 averageRating
                 image {
                   altText
