@@ -1,12 +1,10 @@
 import { GET_PRODUCTS_BY_CATEGORY } from "@/apollo/queries/getProductsByCategory";
 import { GET_MIN_MAX_PRICE_BY_CATEGORY } from "@/apollo/queries/getMinMaxPriceByCategory";
 import { GET_PRODUCT_ATTRIBUTES_BY_CATEGORY } from "@/apollo/queries/getProductAttributesByCategory";
-import Breadcrumb from "@/components/Breadcrumb";
 import { getServerApolloClient } from "@/lib/apollo-server";
 import { createMetadataFromSeo } from "@/lib/seoUtils";
 import { GET_PRODUCT_CATEGORY_SEO_DATA } from "@/apollo/queries/getProductCategorySeoData";
-import FiltersClient from "@/components/FiltersClient";
-import ProductsClient from "@/components/ProductsClient";
+import CategoryPageClient from "@/components/CategoryPageClient";
 
 
 export async function generateMetadata({
@@ -73,98 +71,66 @@ export default async function CategoryPage({
   // Initialize Apollo Client for server-side data fetching
   const client = getServerApolloClient();
 
-  // Fetch min/max price
-  const { data: minMaxData } = await client.query({
-    query: GET_MIN_MAX_PRICE_BY_CATEGORY,
-    variables: { category1: categorySlug },
-  });
-
-  // Fetch product attributes (sizes and colors)
-  const { data: attributesData } = await client.query({
-    query: GET_PRODUCT_ATTRIBUTES_BY_CATEGORY,
-    variables: { id: categorySlug },
-  });
-
-  // Fetch products with pagination and filters
-  const first = currentPage * productsPerPage;
-  const { data } = await client.query({
-    query: GET_PRODUCTS_BY_CATEGORY,
-    variables: {
-      slug: [categorySlug],
-      first,
-      minPrice: urlMinPrice,
-      maxPrice: urlMaxPrice,
-      sizes: urlSizes.length > 0 ? urlSizes : undefined,
-      colors: urlColors.length > 0 ? urlColors : undefined,
-      orderby,
-    },
-  });
+  // Fetch all data in parallel
+  const [minMaxData, attributesData, productsData] = await Promise.all([
+    client.query({
+      query: GET_MIN_MAX_PRICE_BY_CATEGORY,
+      variables: { category1: categorySlug },
+    }),
+    client.query({
+      query: GET_PRODUCT_ATTRIBUTES_BY_CATEGORY,
+      variables: { id: categorySlug },
+    }),
+    client.query({
+      query: GET_PRODUCTS_BY_CATEGORY,
+      variables: {
+        slug: [categorySlug],
+        first: currentPage * productsPerPage,
+        minPrice: urlMinPrice,
+        maxPrice: urlMaxPrice,
+        sizes: urlSizes.length > 0 ? urlSizes : undefined,
+        colors: urlColors.length > 0 ? urlColors : undefined,
+        orderby,
+      },
+    }),
+  ]);
 
   // Extract data from the GraphQL response
-  const categoryNode = data.productCategories.edges[0]?.node;
+  const categoryNode = productsData.data.productCategories.edges[0]?.node;
   const allProducts = categoryNode.products.edges.map((edge: any) => edge.node);
   const products = allProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-  const totalCount = categoryNode.products.pageInfo.total; // Assuming count reflects filtered total
+  const totalCount = categoryNode.products.pageInfo.total;
   const totalPages = Math.ceil(totalCount / productsPerPage);
 
   // Extract filter attributes
-  const sizeAttribute = attributesData?.productCategory?.allAttributes?.find(
+  const sizeAttribute = attributesData.data?.productCategory?.allAttributes?.find(
     (attr: any) => attr.name.toLowerCase().includes("size")
   );
-  const colorAttribute = attributesData?.productCategory?.allAttributes?.find(
+  const colorAttribute = attributesData.data?.productCategory?.allAttributes?.find(
     (attr: any) => attr.name.toLowerCase().includes("color")
   );
 
-  console.log(sizeAttribute)
-
   return (
     <main className="container mx-auto px-4 md:px-6 py-12">
-      <div className="grid gap-8">
-        {/* Category Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {categoryNode.name}
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
-            {categoryNode.description}
-          </p>
-        </div>
-        <div className="grid md:grid-cols-[280px_1fr] gap-8">
-          {/* Filters Sidebar */}
-          <FiltersClient
-            sizeAttribute={sizeAttribute}
-            colorAttribute={colorAttribute}
-            minPrice={Number(minMaxData?.minPrice?.nodes[0]?.price) || 0}
-            maxPrice={Number(minMaxData?.maxPrice?.nodes[0]?.price) || 100}
-            currentSizes={urlSizes}
-            currentColors={urlColors}
-            currentMinPrice={urlMinPrice}
-            currentMaxPrice={urlMaxPrice}
-            // Note: categories and currentCategories are omitted here
-          />
-          {/* Main Content */}
-          <div>
-            <div className="mb-4">
-              <Breadcrumb />
-            </div>
-            <ProductsClient
-              products={products}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              searchParams={searchParams}
-              totalCount={totalCount}
-              currentSizes={urlSizes}
-              currentColors={urlColors}
-              currentMinPrice={urlMinPrice}
-              currentMaxPrice={urlMaxPrice}
-              // Note: currentCategories is omitted here
-            />
-          </div>
-        </div>
-      </div>
+      <CategoryPageClient
+        categoryNode={categoryNode}
+        products={products}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        searchParams={searchParams}
+        totalCount={totalCount}
+        sizeAttribute={sizeAttribute}
+        colorAttribute={colorAttribute}
+        minPrice={Number(minMaxData.data?.minPrice?.nodes[0]?.price) || 0}
+        maxPrice={Number(minMaxData.data?.maxPrice?.nodes[0]?.price) || 100}
+        currentSizes={urlSizes}
+        currentColors={urlColors}
+        currentMinPrice={urlMinPrice}
+        currentMaxPrice={urlMaxPrice}
+      />
     </main>
   );
 }
