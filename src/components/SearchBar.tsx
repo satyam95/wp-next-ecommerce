@@ -32,7 +32,7 @@ function SearchForm() {
   };
 
   return (
-    <div className="relative w-full max-w-md mx-4">
+    <div className="relative w-full max-w-md xl:mx-4">
       <form onSubmit={handleSearch} className="relative">
         <Input
           type="search"

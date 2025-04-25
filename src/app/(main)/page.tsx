@@ -25,7 +25,7 @@ export default function Home() {
         <ProductsCarousel title="Trending Products" catSlug="shirt" />
         <AdsRow />
         <ProductsCarousel title="Trending Bags" catSlug="bag" />
-        <FooterStrip />
+        {/* <FooterStrip /> */}
       </main>
     </>
   );

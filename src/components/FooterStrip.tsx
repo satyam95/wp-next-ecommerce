@@ -3,17 +3,17 @@ import React, { SVGProps } from "react";
 const FooterStrip = () => {
   return (
     <section className="bg-gray-100 py-4 md:py-6 lg:py-8">
-      <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="flex items-center gap-4">
+      <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="flex items-center gap-2 xl:gap-4">
           <CalendarIcon className="w-8 h-8 text-primary" />
           <div>
-            <h3 className="font-semibold">Preferred Time Slot Selection</h3>
+            <h3 className="font-semibold">Preferred Time Slot</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Choose a convenient time for delivery
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 xl:gap-4">
           <TruckIcon className="w-8 h-8 text-primary" />
           <div>
             <h3 className="font-semibold">Delivery in 700+ Cities</h3>
@@ -22,19 +22,19 @@ const FooterStrip = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 xl:gap-4">
           <UsersIcon className="w-8 h-8 text-primary" />
           <div>
-            <h3 className="font-semibold">20 Million People Trust Us</h3>
+            <h3 className="font-semibold">20 Million People Trust</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Our customers love our service
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 xl:gap-4">
           <LocateIcon className="w-8 h-8 text-primary" />
           <div>
-            <h3 className="font-semibold">18000+ Pincodes Serviced</h3>
+            <h3 className="font-semibold">180+ Pincodes Serviced</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               We deliver to all major pincodes
             </p>

@@ -22,9 +22,9 @@ const CategoryRow = () => {
   }
 
   return (
-    <section className="w-full py-4 md:py-6 lg:py-8">
+    <section className="w-full py-4 xl:py-8">
       <div className="container px-4 md:px-6">
-        <div className="grid grid-cols-9 gap-2">
+        <div className="flex overflow-x-auto justify-between gap-7 md:gap-2.5 lg:gap-8">
           {data?.productCategories?.nodes.map((item: Item) => (
             <CategoryCard
               key={item.id}

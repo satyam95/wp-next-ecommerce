@@ -6,116 +6,124 @@ export const Footer = () => {
     <footer className=" bg-gray-100 py-6 w-full">
       <div className="container">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-          <div className="grid gap-4">
-            <div className="flex items-center gap-2">
-              <Package2Icon className="h-6 w-6" />
-              <span className="text-base font-semibold">Store</span>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400">
-              Beautifully designed components that you can copy and paste into
-              your apps.
-            </p>
-            <div className="flex gap-3">
-              <Link
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <TwitterIcon className="h-5 w-5" />
-              </Link>
-              <Link
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <FacebookIcon className="h-5 w-5" />
-              </Link>
-              <Link
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <InstagramIcon className="h-5 w-5" />
-              </Link>
-              <Link
-                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                <LinkedinIcon className="h-5 w-5" />
-              </Link>
+          <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Package2Icon className="h-6 w-6" />
+                <span className="text-base font-semibold">Store</span>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400">
+                Beautifully designed components that you can copy and paste into
+                your apps.
+              </p>
+              <div className="flex gap-3">
+                <Link
+                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                  href="#"
+                >
+                  <TwitterIcon className="h-5 w-5" />
+                </Link>
+                <Link
+                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                  href="#"
+                >
+                  <FacebookIcon className="h-5 w-5" />
+                </Link>
+                <Link
+                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                  href="#"
+                >
+                  <InstagramIcon className="h-5 w-5" />
+                </Link>
+                <Link
+                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                  href="#"
+                >
+                  <LinkedinIcon className="h-5 w-5" />
+                </Link>
+              </div>
             </div>
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-4">
             <h3 className="font-semibold">Quick Links</h3>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Home
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Shop
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              About
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Contact
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="/track-order"
-            >
-              Track order
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Home
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Shop
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                About
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Contact
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="/track-order"
+              >
+                Track order
+              </Link>
+            </div>
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-4">
             <h3 className="font-semibold">Contact</h3>
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-              <PhoneIcon className="h-5 w-5" />
-              <span>+1 (555) 123-4567</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-              <MailIcon className="h-5 w-5" />
-              <span>support@acme.com</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-              <LocateIcon className="h-5 w-5" />
-              <span>123 Main St, Anytown USA</span>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <PhoneIcon className="h-5 w-5" />
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <MailIcon className="h-5 w-5" />
+                <span>support@acme.com</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <LocateIcon className="h-5 w-5" />
+                <span>123 Main St, Anytown USA</span>
+              </div>
             </div>
           </div>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-4">
             <h3 className="font-semibold">Legal</h3>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Refund Policy
-            </Link>
-            <Link
-              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-              href="#"
-            >
-              Shipping Policy
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Refund Policy
+              </Link>
+              <Link
+                className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+                href="#"
+              >
+                Shipping Policy
+              </Link>
+            </div>
           </div>
         </div>
         <div className="container max-w-7xl mt-8 flex justify-center text-sm text-gray-500 dark:text-gray-400">

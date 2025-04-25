@@ -1,12 +1,8 @@
 "use client";
 import Link from "next/link";
-import React, { SVGProps } from "react";
+import React from "react";
 import { Card, CardContent } from "./ui/card";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
 
-import "swiper/css";
-import "swiper/css/navigation";
 import Image from "next/image";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCTS_BY_TAG } from "@/apollo/queries/getProductsByTag";
@@ -34,9 +30,9 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
   }
 
   return (
-    <section className="w-full py-4 md:py-6 lg:py-8">
+    <section className="w-full py-4 xl:py-8">
       <div className="container px-4 md:px-6">
-        <div className="flex items-center justify-between mb-2 md:mb-4 lg:mb-6">
+        <div className="flex items-center justify-between mb-4 xl:mb-6">
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             {title}
           </h2>
@@ -47,17 +43,10 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
             View All
           </Link>
         </div>
-        <Swiper
-          slidesPerView={4}
-          spaceBetween={30}
-          className="mySwiper"
-          navigation={true}
-          modules={[Navigation]}
-        >
-          {data?.products?.edges?.map((product: any) => (
-            <SwiperSlide key={product.node.id}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {data?.products?.edges?.slice(0, 4).map((product: any) => (
+            <div key={product.node.id}>
               <Link href={`product/${product.node.slug}`}>
-                <div className="p-2">
                   <Card>
                     <Image
                       alt={
@@ -75,20 +64,19 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
                       }
                       width={300}
                     />
-                    <CardContent className="p-4">
-                      <h3 className="text-lg font-semibold tracking-tight">
+                    <CardContent className="p-2 xl:p-4">
+                      <h3 className="text-sm md:text-base xl:text-lg font-semibold tracking-tight">
                         {product.node.name}
                       </h3>
-                      <p className="text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs md:text-base text-gray-500 dark:text-gray-400 xl:mt-1">
                         {product.node.regularPrice}
                       </p>
                     </CardContent>
                   </Card>
-                </div>
               </Link>
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
       </div>
     </section>
   );

@@ -10,11 +10,11 @@ type PropsType = {
 
 const CategoryCard = ({ name, slug, image }: PropsType) => {
   return (
-    <div>
-      <Link href={`category/${slug}`}>
-        <div className="flex flex-col gap-2 justify-center items-center">
+    <div className="min-w-28">
+      <Link className="w-full" href={`category/${slug}`}>
+        <div className="w-full flex flex-col gap-2 justify-center items-center">
           {image === null ? (
-            <div className="w-28 h-28 bg-[#eaeaea] rounded-md"></div>
+            <div className="w-full h-28 bg-[#eaeaea] rounded-md"></div>
           ) : (
             <Image
               src={image.sourceUrl}
@@ -28,7 +28,7 @@ const CategoryCard = ({ name, slug, image }: PropsType) => {
               className="rounded-md"
             />
           )}
-          <h3 className="text-lg font-semibold tracking-tight">{name}</h3>
+          <h3 className="text-base xl:text-lg font-semibold tracking-tight">{name}</h3>
         </div>
       </Link>
     </div>

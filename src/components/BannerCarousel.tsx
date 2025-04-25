@@ -21,8 +21,8 @@ export const BannerCarousel = () => {
 
   return (
     <section>
-      <div className="py-2 pb-8">
-        <div className="container">
+      <div className="py-4 md:py-2 md:pb-8">
+        <div className="container px-4 md:px-6">
           <Swiper
             spaceBetween={30}
             centeredSlides={true}
