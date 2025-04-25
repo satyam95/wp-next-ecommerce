@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
+import ForgotPasswordSkeleton from "@/components/skeleton/ForgotPasswordSkeleton";
 
 export const metadata: Metadata = {
   title: "Forgot Password | Your E-commerce Store",
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
 export default function ForgotPasswordPage() {
   return (
     <div className="mx-auto max-w-sm py-16">
-      <ForgotPasswordForm />
+      <Suspense fallback={<ForgotPasswordSkeleton />}>
+        <ForgotPasswordForm />
+      </Suspense>
     </div>
   );
 }

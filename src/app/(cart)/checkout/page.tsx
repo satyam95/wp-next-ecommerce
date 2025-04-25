@@ -1,5 +1,7 @@
 import CheckoutForm from "@/components/forms/CheckoutForm";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import CheckoutSkeleton from "@/components/skeleton/CheckoutSkeleton";
 
 export const metadata: Metadata = {
   title: "Checkout | Your Store Name",
@@ -13,5 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function CheckoutPage() {
-  return <CheckoutForm />;
+  return (
+    <Suspense fallback={<CheckoutSkeleton />}>
+      <CheckoutForm />
+    </Suspense>
+  );
 }

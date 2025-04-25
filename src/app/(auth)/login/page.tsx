@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import LoginForm from "@/components/forms/LoginForm";
+import LoginSkeleton from "@/components/skeleton/LoginSkeleton";
 
 export const metadata: Metadata = {
   title: "Login | Your E-commerce Store",
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <div className="mx-auto max-w-sm py-16">
-      <LoginForm />
+      <Suspense fallback={<LoginSkeleton />}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

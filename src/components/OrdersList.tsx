@@ -9,6 +9,7 @@ import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import OrdersSkeleton from "./skeleton/OrdersSkeleton";
 
 interface ProductImage {
   altText: string;
@@ -76,8 +77,6 @@ interface RootState {
   };
 }
 
-const Spinner = () => <div className="text-center py-10">Loading...</div>;
-
 export default function OrdersList() {
   const { customer } = useAppSelector((state: RootState) => state.session);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -128,11 +127,7 @@ export default function OrdersList() {
   };
 
   if (loading && !data) {
-    return (
-      <div className="flex justify-center py-10">
-        <Spinner />
-      </div>
-    );
+    return <OrdersSkeleton />;
   }
 
   if (error) {
@@ -142,8 +137,6 @@ export default function OrdersList() {
       </div>
     );
   }
-
-  console.log(data);
 
   if (!data?.ordersByCustomerId?.edges.length) {
     return <div className="text-center py-10">No orders found.</div>;

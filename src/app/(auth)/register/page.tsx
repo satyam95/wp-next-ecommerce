@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import RegisterForm from "@/components/forms/RegisterForm";
+import RegisterSkeleton from "@/components/skeleton/RegisterSkeleton";
 
 export const metadata: Metadata = {
   title: "Register | Your E-commerce Store",
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <div className="py-16">
-      <RegisterForm />
+      <Suspense fallback={<RegisterSkeleton />}>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }

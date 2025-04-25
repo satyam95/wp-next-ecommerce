@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/formatDate";
+import TrackOrderSkeleton from "./skeleton/TrackOrderSkeleton";
 
 interface orderProductType {
   id: string;
@@ -83,10 +84,7 @@ export default function TrackOrderClient() {
         {searchOrderId !== null && (
           <div className="space-y-6">
             {loading ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="animate-spin h-8 w-8 text-gray-600" />
-                <p className="ml-2 text-gray-600">Fetching order details...</p>
-              </div>
+              <TrackOrderSkeleton />
             ) : error ? (
               error.message.includes("No order exists") ? (
                 <div className="text-center py-8">

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
+import ResetPasswordSkeleton from "@/components/skeleton/ResetPasswordSkeleton";
 
 export const metadata: Metadata = {
   title: "Reset Password | Your E-commerce Store",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function ResetPasswordPage() {
   return (
     <div className="mx-auto max-w-sm py-16">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ResetPasswordSkeleton />}>
         <ResetPasswordForm />
       </Suspense>
     </div>

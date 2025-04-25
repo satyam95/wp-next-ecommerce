@@ -1,5 +1,7 @@
 import OrdersList from "@/components/OrdersList";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import OrdersSkeleton from "@/components/skeleton/OrdersSkeleton";
 
 export const metadata: Metadata = {
   title: "My Orders | Your Store Name",
@@ -13,5 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function Orders() {
-  return <OrdersList />;
+  return (
+    <Suspense fallback={<OrdersSkeleton />}>
+      <OrdersList />
+    </Suspense>
+  );
 }

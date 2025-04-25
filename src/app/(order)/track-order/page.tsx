@@ -1,5 +1,7 @@
 import TrackOrderClient from "@/components/TrackOrderClient";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import TrackOrderSkeleton from "@/components/skeleton/TrackOrderSkeleton";
 
 export const metadata: Metadata = {
   title: "Track Your Order | Your Store Name",
@@ -13,5 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function TrackOrder() {
-  return <TrackOrderClient />;
+  return (
+    <Suspense fallback={<TrackOrderSkeleton />}>
+      <TrackOrderClient />
+    </Suspense>
+  );
 }

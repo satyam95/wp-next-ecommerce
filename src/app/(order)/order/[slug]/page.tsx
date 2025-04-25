@@ -1,5 +1,7 @@
 import OrderDetailsBlock from "@/components/OrderDetailsBlock";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import OrderDetailSkeleton from "@/components/skeleton/OrderDetailSkeleton";
 
 export async function generateMetadata({
   params,
@@ -18,5 +20,9 @@ export async function generateMetadata({
 }
 
 export default function OrderDetail({ params }: { params: { slug: string } }) {
-  return <OrderDetailsBlock params={params} />;
+  return (
+    <Suspense fallback={<OrderDetailSkeleton />}>
+      <OrderDetailsBlock params={params} />
+    </Suspense>
+  );
 }

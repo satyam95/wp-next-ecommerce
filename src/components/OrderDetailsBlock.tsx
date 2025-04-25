@@ -6,6 +6,9 @@ import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/formatDate";
 import { useQuery } from "@apollo/client";
 import Image from "next/image";
+import OrderDetailsSkeleton from "./skeleton/OrderDetailsSkeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface orderProductType {
   id: string;
@@ -29,9 +32,23 @@ export default function OrderDetailsBlock({ params }: { params: { slug: string }
     variables: { id: orderSlug },
   });
 
-  console.log(data);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching products</p>;
+  if (loading) return <OrderDetailsSkeleton />;
+  
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {error.message || "Failed to load order details. Please try again later."}
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

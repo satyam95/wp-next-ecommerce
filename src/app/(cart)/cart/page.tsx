@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import CartItems from "@/components/CartItems";
+import CartSkeleton from "@/components/skeleton/CartSkeleton";
 
 export const metadata: Metadata = {
   title: "Shopping Cart | Your Store",
@@ -17,5 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default function CartPage() {
-  return <CartItems />;
+  return (
+    <Suspense fallback={<CartSkeleton />}>
+      <CartItems />
+    </Suspense>
+  );
 }
