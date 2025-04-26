@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react";
 
 interface ProductsClientProps {
   products: any[];
@@ -24,6 +26,7 @@ interface ProductsClientProps {
   currentColors: string[];
   currentMinPrice?: number;
   currentMaxPrice?: number;
+  onOpenMobileFilter: () => void;
 }
 
 export default function ProductsClient({
@@ -37,6 +40,7 @@ export default function ProductsClient({
   currentColors,
   currentMinPrice,
   currentMaxPrice,
+  onOpenMobileFilter,
 }: ProductsClientProps) {
   const router = useRouter();
 
@@ -113,16 +117,41 @@ export default function ProductsClient({
 
   return (
     <div>
-      <div className="flex items-center justify-end mb-4 gap-4">
+      {/* Top Bar with Filter and Sort */}
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2 lg:hidden"
+            onClick={onOpenMobileFilter}
+          >
+            <Filter className="h-4 w-4" />
+            Filters
+          </Button>
+          <div className="ml-auto">
+            <Select onValueChange={handleSortChange} value={urlSort}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="priceHighToLow">Price: High to Low</SelectItem>
+                  <SelectItem value="priceLowToHigh">Price: Low to High</SelectItem>
+                  <SelectItem value="customerRating">Customer Rating</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         {/* Active Filters Display */}
-        {((currentCategories?? []).length > 0 ||
+        {((currentCategories ?? []).length > 0 ||
           currentSizes.length > 0 ||
           currentColors.length > 0 ||
           currentMinPrice !== undefined ||
           currentMaxPrice !== undefined) && (
-          <div className="flex flex-wrap gap-2 items-center grow">
-            <h4 className="text-base font-semibold">Filter:</h4>
-            {/* Safely map over currentCategories if defined */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <h4 className="text-base font-semibold">Active filters:</h4>
             {currentCategories && currentCategories.map((category) => (
               <div
                 key={category}
@@ -185,22 +214,10 @@ export default function ProductsClient({
             )}
           </div>
         )}
-        {/* Sorting Select */}
-        <Select onValueChange={handleSortChange} value={urlSort}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="priceHighToLow">Price: High to Low</SelectItem>
-              <SelectItem value="priceLowToHigh">Price: Low to High</SelectItem>
-              <SelectItem value="customerRating">Customer Rating</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
       </div>
+
       {/* Products Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product: any) => (
           <ProductCard
             key={product.id}
@@ -213,12 +230,13 @@ export default function ProductsClient({
           />
         ))}
       </div>
+
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
-          hasNextPage={totalCount > currentPage * 9} // Adjust based on items per page
+          hasNextPage={totalCount > currentPage * 9}
         />
       )}
     </div>

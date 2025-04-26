@@ -2,14 +2,12 @@ import { GET_PRODUCTS } from "@/apollo/queries/getProducts";
 import { GET_MIN_MAX_PRICE } from "@/apollo/queries/getMinMaxPrice";
 import { GET_PRODUCT_ATTRIBUTES } from "@/apollo/queries/getProductAttributes";
 import { GET_PRODUCT_CATEGORIES } from "@/apollo/queries/getProductCategories";
-import Breadcrumb from "@/components/Breadcrumb";
 import { getServerApolloClient } from "@/lib/apollo-server";
-import FiltersClient from "@/components/FiltersClient";
-import ProductsClient from "@/components/ProductsClient";
 import { GET_PAGE_SEO_DATA } from "@/apollo/queries/getSeoData";
 import { createMetadataFromSeo } from "@/lib/seoUtils";
 import { Suspense } from "react";
 import { ShopPageSkeleton } from "@/components/skeleton/ShopPageSkeleton";
+import ShopPageClient from "@/components/ShopPageClient";
 
 const getOrderbyValue = (sort: string) => {
   switch (sort) {
@@ -104,7 +102,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     query: GET_PRODUCTS,
     variables: {
       first,
-      after: afterCursor || null, // Use null if no cursor
+      after: afterCursor || null,
       categories: selectedCategories.length > 0 ? selectedCategories : undefined,
       minPrice: urlMinPrice,
       maxPrice: urlMaxPrice,
@@ -116,54 +114,29 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   const products = data.products.edges.map((edge: any) => edge.node);
   const pageInfo = data.products.pageInfo;
-  const totalCount = data.products.found || data.products.pageInfo.total; // Use 'found' if available
+  const totalCount = data.products.found || data.products.pageInfo.total;
   const totalPages = Math.ceil(totalCount / productsPerPage);
-  const endCursor = pageInfo.endCursor;
-
-  // console.log(`Products fetched: ${products.length}, Total: ${totalCount}, Cursor: ${endCursor}`);
 
   return (
     <Suspense fallback={<ShopPageSkeleton />}>
       <main className="container mx-auto px-4 md:px-6 py-12">
-        <div className="grid gap-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">
-              Browse our full range of products.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-[280px_1fr] gap-8">
-            <FiltersClient
-              categories={categories}
-              sizeAttribute={sizeAttribute}
-              colorAttribute={colorAttribute}
-              minPrice={Number(minMaxData?.minPrice?.nodes[0]?.price) || 0}
-              maxPrice={Number(minMaxData?.maxPrice?.nodes[0]?.price) || 100}
-              currentCategories={selectedCategories}
-              currentSizes={urlSizes}
-              currentColors={urlColors}
-              currentMinPrice={urlMinPrice}
-              currentMaxPrice={urlMaxPrice}
-            />
-            <div>
-              <div className="mb-4">
-                <Breadcrumb />
-              </div>
-              <ProductsClient
-                products={products}
-                totalPages={totalPages}
-                currentPage={currentPage}
-                searchParams={searchParams}
-                totalCount={totalCount}
-                currentCategories={selectedCategories}
-                currentSizes={urlSizes}
-                currentColors={urlColors}
-                currentMinPrice={urlMinPrice}
-                currentMaxPrice={urlMaxPrice}
-              />
-            </div>
-          </div>
-        </div>
+        <ShopPageClient
+          categories={categories}
+          sizeAttribute={sizeAttribute}
+          colorAttribute={colorAttribute}
+          minPrice={Number(minMaxData?.minPrice?.nodes[0]?.price) || 0}
+          maxPrice={Number(minMaxData?.maxPrice?.nodes[0]?.price) || 100}
+          products={products}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          searchParams={searchParams}
+          totalCount={totalCount}
+          currentCategories={selectedCategories}
+          currentSizes={urlSizes}
+          currentColors={urlColors}
+          currentMinPrice={urlMinPrice}
+          currentMaxPrice={urlMaxPrice}
+        />
       </main>
     </Suspense>
   );

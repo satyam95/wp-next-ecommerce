@@ -1,7 +1,7 @@
 import { FiltersSkeleton } from "./FiltersSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ShopPageSkeleton() {
+export function CategoryPageSkeleton() {
   return (
     <div className="grid gap-8">
       {/* Header */}

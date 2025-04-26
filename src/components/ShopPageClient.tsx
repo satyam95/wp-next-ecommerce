@@ -1,112 +1,131 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import FiltersClient from "./FiltersClient";
 import ProductsClient from "./ProductsClient";
-import { ProductsGridSkeleton } from "./skeleton/ProductsGridSkeleton";
-import { FiltersSkeleton } from "./skeleton/FiltersSkeleton";
 import Breadcrumb from "./Breadcrumb";
 import MobileFilterDrawer from "./MobileFilterDrawer";
-import { Filter } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-interface CategoryPageClientProps {
-  categoryNode: any;
+interface ShopPageClientProps {
+  categories: any[];
+  sizeAttribute: any;
+  colorAttribute: any;
+  minPrice: number;
+  maxPrice: number;
   products: any[];
   totalPages: number;
   currentPage: number;
   searchParams: { [key: string]: string | string[] | undefined };
   totalCount: number;
-  sizeAttribute: any;
-  colorAttribute: any;
-  minPrice: number;
-  maxPrice: number;
+  currentCategories: string[];
   currentSizes: string[];
   currentColors: string[];
   currentMinPrice?: number;
   currentMaxPrice?: number;
 }
 
-export default function CategoryPageClient({
-  categoryNode,
+export default function ShopPageClient({
+  categories,
+  sizeAttribute,
+  colorAttribute,
+  minPrice,
+  maxPrice,
   products,
   totalPages,
   currentPage,
   searchParams,
   totalCount,
-  sizeAttribute,
-  colorAttribute,
-  minPrice,
-  maxPrice,
+  currentCategories,
   currentSizes,
   currentColors,
   currentMinPrice,
   currentMaxPrice,
-}: CategoryPageClientProps) {
-  const [isLoading, setIsLoading] = useState(true);
+}: ShopPageClientProps) {
+  const router = useRouter();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [tempFilters, setTempFilters] = useState({
+    categories: currentCategories,
     sizes: currentSizes,
     colors: currentColors,
     minPrice: currentMinPrice,
     maxPrice: currentMaxPrice,
   });
 
-  useEffect(() => {
-    // Simulate loading state for better UX
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Update temp filters when current filters change
   useEffect(() => {
     setTempFilters({
+      categories: currentCategories,
       sizes: currentSizes,
       colors: currentColors,
       minPrice: currentMinPrice,
       maxPrice: currentMaxPrice,
     });
-  }, [currentSizes, currentColors, currentMinPrice, currentMaxPrice]);
+  }, [currentCategories, currentSizes, currentColors, currentMinPrice, currentMaxPrice]);
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-8">
-        <div className="text-center">
-          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto" />
-          <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto mt-2" />
-        </div>
-        <div className="grid md:grid-cols-[280px_1fr] gap-8">
-          <FiltersSkeleton />
-          <div>
-            <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4" />
-            <ProductsGridSkeleton />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Handle applying filters
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams(searchParams as Record<string, string>);
+    
+    // Update categories
+    if (tempFilters.categories.length > 0) {
+      params.set("categories", tempFilters.categories.join(","));
+    } else {
+      params.delete("categories");
+    }
+
+    // Update sizes
+    if (tempFilters.sizes.length > 0) {
+      params.set("size", tempFilters.sizes.join(","));
+    } else {
+      params.delete("size");
+    }
+
+    // Update colors
+    if (tempFilters.colors.length > 0) {
+      params.set("color", tempFilters.colors.join(","));
+    } else {
+      params.delete("color");
+    }
+
+    // Update price range
+    if (tempFilters.minPrice !== undefined) {
+      params.set("minPrice", tempFilters.minPrice.toString());
+    } else {
+      params.delete("minPrice");
+    }
+    if (tempFilters.maxPrice !== undefined) {
+      params.set("maxPrice", tempFilters.maxPrice.toString());
+    } else {
+      params.delete("maxPrice");
+    }
+
+    // Reset to page 1 when filters change
+    params.set("page", "1");
+
+    // Update URL
+    router.push(`?${params.toString()}`);
+    setIsMobileFilterOpen(false);
+  };
 
   return (
     <div className="grid gap-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">
-          {categoryNode.name}
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-2">
-          {categoryNode.description}
+          Browse our full range of products.
         </p>
       </div>
-      <div className="grid lg:grid-cols-[200px_1fr] xl:grid-cols-[280px_1fr] gap-6 xl:gap-8">
+      <div className="grid lg:grid-cols-[280px_1fr] gap-6 xl:gap-8">
         {/* Desktop Filters */}
         <div className="hidden lg:block">
           <FiltersClient
+            categories={categories}
             sizeAttribute={sizeAttribute}
             colorAttribute={colorAttribute}
             minPrice={minPrice}
             maxPrice={maxPrice}
+            currentCategories={currentCategories}
             currentSizes={currentSizes}
             currentColors={currentColors}
             currentMinPrice={currentMinPrice}
@@ -124,6 +143,7 @@ export default function CategoryPageClient({
             currentPage={currentPage}
             searchParams={searchParams}
             totalCount={totalCount}
+            currentCategories={currentCategories}
             currentSizes={currentSizes}
             currentColors={currentColors}
             currentMinPrice={currentMinPrice}
@@ -140,21 +160,20 @@ export default function CategoryPageClient({
           setIsMobileFilterOpen(false);
           // Reset temp filters when closing without applying
           setTempFilters({
+            categories: currentCategories,
             sizes: currentSizes,
             colors: currentColors,
             minPrice: currentMinPrice,
             maxPrice: currentMaxPrice,
           });
         }}
-        onApply={() => {
-          // Apply the temp filters here
-          // You'll need to implement the logic to update the URL with the new filters
-          setIsMobileFilterOpen(false);
-        }}
+        onApply={handleApplyFilters}
+        categories={categories}
         sizeAttribute={sizeAttribute}
         colorAttribute={colorAttribute}
         minPrice={minPrice}
         maxPrice={maxPrice}
+        currentCategories={tempFilters.categories}
         currentSizes={tempFilters.sizes}
         currentColors={tempFilters.colors}
         currentMinPrice={tempFilters.minPrice}
