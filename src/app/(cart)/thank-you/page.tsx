@@ -31,10 +31,10 @@ export default function ThankYou({
             <div className="flex justify-center mb-6">
               <CheckCircle className="h-20 w-20 text-green-500" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Thank You for Your Order!
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Your order has been successfully placed and is being processed.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function ThankYou({
               <p className="text-gray-600">
                 A confirmation email has been sent to your email address.
               </p>
-              <div className="flex justify-center space-x-4">
+              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-x-4">
                 <Button asChild variant="outline">
                   <Link href="/orders">View Order Status</Link>
                 </Button>
