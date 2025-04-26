@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="mx-auto max-w-sm py-16">
+    <div className="mx-auto max-w-sm px-4 py-16">
       <Suspense fallback={<ResetPasswordSkeleton />}>
         <ResetPasswordForm />
       </Suspense>
