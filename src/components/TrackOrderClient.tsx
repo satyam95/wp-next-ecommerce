@@ -104,7 +104,7 @@ export default function TrackOrderClient() {
                 </div>
               )
             ) : data && data.orderByIdAndEmail ? (
-              <div className="space-y-6">
+              <div className="space-y-6 mt-10">
                 <Card>
                   <div className="flex items-center justify-between p-6">
                     <div>

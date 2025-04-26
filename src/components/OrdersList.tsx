@@ -145,21 +145,21 @@ export default function OrdersList() {
   return (
     <div className="flex flex-col w-full min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="sticky top-0 z-10 border-b bg-white dark:bg-gray-800">
-        <div className="container">
+        <div className="container px-4 sm:px-6">
           <div className="flex items-center justify-between py-4">
             <h1 className="text-2xl font-bold tracking-tight">Orders</h1>
           </div>
         </div>
       </div>
-      <div className="container py-6">
+      <div className="container py-6 px-4 sm:px-6">
         <div className="grid gap-4">
           {data.ordersByCustomerId.edges.map((order) => (
             <Card key={order.cursor} className="overflow-hidden">
               <Link href={`/order/${order.node.orderNumber}`}>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                         Order #{order.node.orderNumber} •{" "}
                         {formatDate(order.node.date)}
                       </div>
@@ -203,7 +203,7 @@ export default function OrdersList() {
                       <div className="text-xs text-gray-500 dark:text-gray-400">
                         Payment Method: {order.node.paymentMethodTitle}
                       </div>
-                      <div className="text-lg font-semibold">
+                      <div className="text-base sm:text-lg font-semibold">
                         Total: {order.node.total}
                       </div>
                     </div>
