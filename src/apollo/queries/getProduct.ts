@@ -43,10 +43,26 @@ export const GET_PRODUCT = gql`
             id
             name
             slug
+            shortDescription
+            averageRating
             image {
               altText
               id
               sourceUrl
+            }
+            ... on SimpleProduct {
+              id
+              name
+              salePrice
+              price
+              regularPrice
+            }
+            ... on VariableProduct {
+              id
+              name
+              salePrice
+              price
+              regularPrice
             }
           }
         }

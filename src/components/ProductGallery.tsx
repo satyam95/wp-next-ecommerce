@@ -16,8 +16,8 @@ const ProductGallery = ({ images }: any) => {
   }
 
   return (
-    <div className="flex gap-4">
-      <div className="w-32 flex flex-col gap-2">
+    <div className="flex flex-col-reverse sm:flex-row gap-4 w-full">
+      <div className="sm:w-32 flex sm:flex-col gap-2 overflow-x-auto justify-between">
         {images?.edges.map((image: any) => (
           <Image
             key={image?.node?.id}
@@ -25,7 +25,7 @@ const ProductGallery = ({ images }: any) => {
             alt={image?.node?.id}
             width={128}
             height={128}
-            className="rounded-lg cursor-pointer object-cover aspect-square"
+            className="rounded-lg h-20 w-20 sm:w-32 sm:h-32 cursor-pointer object-cover aspect-square"
             onClick={() => setMainImage(image)}
           />
         ))}
@@ -33,7 +33,7 @@ const ProductGallery = ({ images }: any) => {
       {mainImage !== null && (
         <Image
           alt={`${mainImage?.node.id} main image`}
-          className="grow aspect-square border border-gray-200 rounded-lg object-cover overflow-hidden"
+          className="grow w-full aspect-square border border-gray-200 rounded-lg object-cover overflow-hidden"
           height={300}
           src={mainImage?.node.sourceUrl}
           width={300}

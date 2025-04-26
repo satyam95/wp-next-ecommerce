@@ -52,7 +52,7 @@ const ProductCard = ({ title, excerpt, price, slug, image, rating }: PropsType) 
               <span className="text-sm">{rating}</span>
             </div>
           )}
-          <div className="font-semibold text-sm sm:text-lg">{price}</div>
+          <div className="text-gray-500 text-sm sm:text-lg">{price}</div>
         </div>
       </div>
     </div>

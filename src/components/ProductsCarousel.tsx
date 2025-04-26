@@ -68,7 +68,7 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
                       <h3 className="text-sm md:text-base xl:text-lg font-semibold tracking-tight">
                         {product.node.name}
                       </h3>
-                      <p className="text-xs md:text-base text-gray-500 dark:text-gray-400 xl:mt-1">
+                      <p className="text-gray-500 text-sm sm:text-lg xl:mt-1">
                         {product.node.regularPrice}
                       </p>
                     </CardContent>

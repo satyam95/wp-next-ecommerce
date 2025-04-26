@@ -9,7 +9,7 @@ export function SearchPageSkeleton() {
         </div>
         
         {/* Products grid skeleton */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, index) => (
             <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
               <div className="aspect-square bg-gray-200 dark:bg-gray-700 animate-pulse" />

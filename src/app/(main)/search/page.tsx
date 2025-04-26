@@ -115,7 +115,7 @@ async function SearchResults({ searchQuery }: { searchQuery: string }) {
             {data?.products.found !== 1 ? "s" : ""} found
           </p>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map(({ node }) => (
             <ProductCard
               key={node.id}

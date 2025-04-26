@@ -13,7 +13,7 @@ export const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
   const filledStars = Math.round(rating);
 
   return (
-    <div className="flex items-center gap-0.5 ml-auto">
+    <div className="flex items-center gap-0.5">
       {[...Array(totalStars)].map((_, index) => (
         <StarIcon key={index} filled={index < filledStars} />
       ))}
