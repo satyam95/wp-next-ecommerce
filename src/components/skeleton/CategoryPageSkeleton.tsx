@@ -6,8 +6,8 @@ export function CategoryPageSkeleton() {
     <div className="grid gap-8">
       {/* Header */}
       <div className="text-center">
-        <div className="h-8 w-48 bg-gray-200 dark:bg-gray-800 rounded animate-pulse mx-auto" />
-        <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse mx-auto mt-2" />
+        <Skeleton className="h-9 w-48 mx-auto" /> {/* Title */}
+        <Skeleton className="h-5 w-3/4 mx-auto mt-2" /> {/* Description */}
       </div>
 
       <div className="grid lg:grid-cols-[280px_1fr] gap-6 xl:gap-8">
@@ -34,17 +34,29 @@ export function CategoryPageSkeleton() {
                 <Skeleton className="h-10 w-[180px]" /> {/* Sort Dropdown */}
               </div>
             </div>
+
+            {/* Active Filters */}
+            <div className="flex flex-wrap gap-2">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-8 w-24 rounded-full" />
+              ))}
+            </div>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-square rounded-xl" />
+              <div key={i} className="group">
+                <div className="aspect-[3/4] mb-3">
+                  <Skeleton className="h-full w-full rounded-lg" />
+                </div>
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-4 w-1/3" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
                 </div>
               </div>
             ))}
@@ -52,9 +64,9 @@ export function CategoryPageSkeleton() {
 
           {/* Pagination */}
           <div className="mt-8 flex items-center justify-center gap-2">
-            <Skeleton className="h-10 w-10" />
-            <Skeleton className="h-10 w-10" />
-            <Skeleton className="h-10 w-10" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
           </div>
         </div>
       </div>

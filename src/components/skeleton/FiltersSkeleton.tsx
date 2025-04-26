@@ -2,7 +2,7 @@ import React from "react";
 
 export const FiltersSkeleton = () => {
   return (
-    <div className="bg-white dark:bg-gray-950 rounded-lg shadow-sm p-6 space-y-6">
+    <div className="hidden sm:block bg-white dark:bg-gray-950 rounded-lg shadow-sm p-6 space-y-6">
       <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
       <div className="space-y-6">
         {/* Price Range Skeleton */}

@@ -9,9 +9,9 @@ export const ProductsCarouselSkeleton = () => {
           <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
           <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
         </div>
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="p-2">
+            <div key={index}>
               <Card>
                 <div className="w-full aspect-square bg-gray-200 dark:bg-gray-700 rounded-t-lg animate-pulse" />
                 <CardContent className="p-4">

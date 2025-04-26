@@ -4,10 +4,11 @@ import { Card, CardContent } from "../ui/card";
 export const ProductsGridSkeleton = () => {
   return (
     <div>
-      <div className="flex items-center justify-end mb-4 gap-4">
-        <div className="h-9 w-[180px] bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+      <div className="flex items-center justify-between sm:justify-end mb-4 gap-4">
+        <div className="sm:hidden h-9 w-[130px] sm:w-[180px] bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        <div className="h-9 w-[130px] sm:w-[180px] bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(9)].map((_, index) => (
           <Card key={index} className="overflow-hidden">
             <div className="aspect-square bg-gray-200 dark:bg-gray-700 animate-pulse" />
@@ -30,4 +31,4 @@ export const ProductsGridSkeleton = () => {
       </div>
     </div>
   );
-}; 
+};
