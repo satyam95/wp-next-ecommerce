@@ -65,7 +65,7 @@ export default function CartItems() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold sm:mb-2">Shopping Cart</h1>
               <p className="text-muted-foreground">
                 {contents.itemCount}{" "}
                 {contents.itemCount === 1 ? "item" : "items"} (
@@ -85,14 +85,14 @@ export default function CartItems() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-[1fr_380px] gap-8">
+        <div className="grid sm:grid-cols-[1fr_300px] xl:grid-cols-[1fr_380px] gap-4 lg:gap-8">
           <div className="flex flex-col gap-4">
             {contents.nodes.map((item: any) => (
               <div
                 key={item.key}
-                className="bg-white rounded-xl border p-6 transition-shadow hover:shadow-md"
+                className="bg-white rounded-xl border p-2 sm:p-6 transition-shadow hover:shadow-md"
               >
-                <div className="grid sm:grid-cols-[120px_1fr] gap-6">
+                <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[120px_1fr] gap-4 sm:gap-6">
                   <div className="relative aspect-square">
                     <Image
                       alt={
@@ -116,11 +116,11 @@ export default function CartItems() {
                   <div className="flex flex-col">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-semibold text-lg mb-1">
+                        <h3 className="font-semibold text-base sm:text-lg mb-1">
                           {item.product.node.name}
                         </h3>
                         <p
-                          className="text-sm text-muted-foreground line-clamp-2"
+                          className="text-xs sm:text-sm text-muted-foreground line-clamp-2"
                           dangerouslySetInnerHTML={{
                             __html: item.product.node.description,
                           }}
@@ -149,7 +149,7 @@ export default function CartItems() {
                         >
                           <MinusIcon className="h-4 w-4" />
                         </Button>
-                        <span className="w-12 text-center">
+                        <span className="w-6 sm:w-12 text-center">
                           {item.quantity}
                         </span>
                         <Button
@@ -174,9 +174,9 @@ export default function CartItems() {
             ))}
           </div>
 
-          <div className="bg-white rounded-xl border p-6 h-fit sticky top-8">
+          <div className="bg-white rounded-xl border p-4 lg:p-6 h-fit sticky top-8">
             <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>{subtotal}</span>

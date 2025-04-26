@@ -179,22 +179,22 @@ export default function CheckoutForm() {
         className="min-h-screen bg-gray-50 dark:bg-gray-900"
       >
         <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12">
-          <div className="flex items-center gap-3 mb-8">
-            <ShoppingBag className="h-8 w-8" />
-            <h1 className="text-3xl font-bold">Checkout</h1>
+          <div className="flex items-center gap-3 mb-6 sm:mb-8">
+            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8" />
+            <h1 className="text-2xl sm:text-3xl font-bold">Checkout</h1>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Checkout Form */}
             <div className="lg:col-span-2 space-y-6">
               {/* Contact Information */}
               <Card>
-                <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-center gap-2">
                     <Package className="h-5 w-5" />
-                    <h2 className="text-xl font-semibold">Contact Information</h2>
+                    <h2 className="text-base sm:text-xl font-semibold">Contact Information</h2>
                   </div>
                 </CardHeader>
-                <CardContent className="grid gap-4">
+                <CardContent className="grid gap-4 p-4 sm:p-6 pt-0">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
@@ -229,14 +229,14 @@ export default function CheckoutForm() {
               </Card>
               {/* Shipping Address */}
               <Card>
-                <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-center gap-2">
                     <Truck className="h-5 w-5" />
-                    <h2 className="text-xl font-semibold">Shipping Address</h2>
+                    <h2 className="text-base sm:text-xl font-semibold">Shipping Address</h2>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid gap-6">
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="grid gap-4 sm:gap-6">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="shipping-firstName">First Name</Label>
@@ -369,14 +369,14 @@ export default function CheckoutForm() {
               </Card>
               {/* Billing Address */}
               <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-2 mb-2">
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between gap-1 sm:gap-2">
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
-                      <h2 className="text-xl font-semibold">Billing Address</h2>
+                      <h2 className="sm:text-xl font-semibold">Billing Address</h2>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Label htmlFor="same-as-shipping" className="text-sm">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <Label htmlFor="same-as-shipping" className="text-xs sm:text-sm">
                         Same as shipping
                       </Label>
                       <Switch
@@ -390,8 +390,8 @@ export default function CheckoutForm() {
                   </div>
                 </CardHeader>
                 {!watch("sameAsShipping") && (
-                  <CardContent>
-                    <div className="grid gap-6">
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <div className="grid gap-4 sm:gap-6">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="billing-firstName">First Name</Label>
@@ -533,15 +533,15 @@ export default function CheckoutForm() {
             {/* Right Column - Order Summary & Payment */}
             <div className="space-y-6">
               <Card>
-                <CardHeader>
+                <CardHeader className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Order Summary</h2>
+                    <h2 className="text-base sm:text-xl font-semibold">Order Summary</h2>
                     <span className="text-sm text-muted-foreground">
                       {contents.itemCount} items
                     </span>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4 sm:p-6 pt-0">
                   <div className="space-y-4">
                     <ScrollArea className="max-h-[300px] pr-4">
                       <div className="space-y-4">
@@ -599,13 +599,13 @@ export default function CheckoutForm() {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader>
+                <CardHeader className="p-4 sm:p-6">
                   <div className="flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
-                    <h2 className="text-xl font-semibold">Payment Method</h2>
+                    <h2 className="text-base sm:text-xl font-semibold">Payment Method</h2>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 p-4 sm:p-6 pt-0">
                   <div className="grid gap-4">
                     <div className="flex items-center p-4 border rounded-lg">
                       <input
