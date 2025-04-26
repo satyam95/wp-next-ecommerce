@@ -17,8 +17,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <Suspense fallback={<CheckoutSkeleton />}>
-      {/* <CheckoutForm /> */}
-      <CheckoutSkeleton />
+      <CheckoutForm />
     </Suspense>
   );
 }
