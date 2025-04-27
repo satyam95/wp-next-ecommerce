@@ -39,7 +39,7 @@ export default function ProductContent({ slug }: { slug: string }) {
   return (
     <div className="container px-4 sm:px-6 mx-auto py-6 sm:py-8 lg:py-12">
       <div className="flex flex-col gap-12">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-8 xl:gap-12 items-start">
+        <div className="flex items-center flex-col lg:flex-row gap-10 lg:gap-8 xl:gap-12 items-start">
           {/* Product Gallery */}
           <div className="flex flex-col gap-4 md:gap-10 items-start w-full lg:w-1/2">
             <ProductGallery images={product.galleryImages} />
@@ -61,7 +61,7 @@ export default function ProductContent({ slug }: { slug: string }) {
               <div className="text-4xl font-bold">{product.price}</div>
 
               {/* Product Attributes */}
-              <div className="flex flex-col gap-4">
+              {/* <div className="flex flex-col gap-4">
                 {attributes.map((attribute: any) => (
                   <div className="flex flex-col gap-2" key={attribute.id}>
                     <Label htmlFor={attribute.name}>{attribute.label}</Label>
@@ -82,7 +82,7 @@ export default function ProductContent({ slug }: { slug: string }) {
                     </RadioGroup>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
               {/* Interactive Actions */}
               <ProductActions
