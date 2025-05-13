@@ -86,7 +86,7 @@ export default function ThankYou({
               <p className="text-gray-600">
                 A confirmation email has been sent to your email address.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-x-4">
+              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Button asChild variant="outline">
                   <Link href="/orders">View Order Status</Link>
                 </Button>

@@ -30,6 +30,10 @@ import { CheckoutSchema } from "@/schemas/checkoutSchema";
 import { CREATE_ORDER_MUTATION } from "@/apollo/mutations/createOrder";
 import { useRouter } from "next/navigation";
 import { useCartActions } from "@/redux/useCartActions";
+import {
+  createCheckoutSessionAndRedirect,
+  getCreateOrderData,
+} from "@/lib/order";
 
 type CheckoutFormData = z.infer<typeof CheckoutSchema>;
 
@@ -150,33 +154,64 @@ export default function CheckoutForm() {
       data.billing = { ...data.shipping };
     }
     try {
-      const variables: Record<string, any> = {
-        isPaid: false,
-        paymentMethod: data.paymentMethod,
-        billing: {
-          ...data.billing,
-          email: data.email,
-          phone: data.phone,
-        },
-        shipping: {
-          ...data.shipping,
-          email: data.email,
-          phone: data.phone,
-        },
-      };
+      if (data.paymentMethod === "cod") {
+        const variables: Record<string, any> = {
+          isPaid: false,
+          paymentMethod: data.paymentMethod,
+          billing: {
+            ...data.billing,
+            email: data.email,
+            phone: data.phone,
+          },
+          shipping: {
+            ...data.shipping,
+            email: data.email,
+            phone: data.phone,
+          },
+        };
 
-      const response = await createOrder({ variables });
+        const response = await createOrder({ variables });
 
-      if (response.data.checkout.result === "success") {
-        const orderId = response.data.checkout.order.orderNumber;
-        router.push(`/thank-you?orderId=${orderId}`);
-        await refetch();
-        await clearCart();
-      } else {
-        setError("root", {
-          message: "Order creation failed. Please try again.",
-        });
-        console.error("Order creation failed:", response.data.checkout);
+        if (response.data.checkout.result === "success") {
+          const orderId = response.data.checkout.order.orderNumber;
+          router.push(`/thank-you?orderId=${orderId}`);
+          await refetch();
+          await clearCart();
+        } else {
+          setError("root", {
+            message: "Order creation failed. Please try again.",
+          });
+          console.error("Order creation failed:", response.data.checkout);
+        }
+      } else if (data.paymentMethod === "stripe") {
+        const variables = {
+          isPaid: false,
+          paymentMethod: "stripe",
+          billing: {
+            ...data.billing,
+            email: data.email,
+            phone: data.phone,
+          },
+          shipping: {
+            ...data.shipping,
+            email: data.email,
+            phone: data.phone,
+          },
+        };
+        const orderData = getCreateOrderData(variables, contents.nodes);
+        try {
+          const request = await fetch("/api/create-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(orderData),
+          });
+          const result = await request.json();
+          await createCheckoutSessionAndRedirect(result.orderId, contents.nodes, variables);
+        } catch (error) {
+          console.error("Handle create order error", error);
+        }
       }
     } catch (err) {
       setError("root", {
@@ -662,6 +697,21 @@ export default function CheckoutForm() {
                       <span className="font-medium">Cash on Delivery</span>
                       <p className="text-sm text-gray-500">
                         Pay when you receive
+                      </p>
+                    </label>
+                  </div>
+                  <div className="flex items-center p-4 border rounded-lg">
+                    <input
+                      type="radio"
+                      id="stripe"
+                      value="stripe"
+                      {...register("paymentMethod")}
+                      className="h-4 w-4 border-gray-300"
+                    />
+                    <label htmlFor="stripe" className="ml-3 block">
+                      <span className="font-medium">Credit/Debit Card</span>
+                      <p className="text-sm text-gray-500">
+                        Pay securely with Stripe
                       </p>
                     </label>
                   </div>
