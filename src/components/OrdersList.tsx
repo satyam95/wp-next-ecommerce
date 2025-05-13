@@ -93,6 +93,8 @@ export default function OrdersList() {
     skip: !customer?.databaseId,
   });
 
+  console.log(data)
+
   const handleLoadMore = async () => {
     if (!data?.ordersByCustomerId.pageInfo.hasNextPage || loadingMore) return;
 
