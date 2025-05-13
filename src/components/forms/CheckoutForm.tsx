@@ -89,29 +89,6 @@ export default function CheckoutForm() {
     },
   });
 
-  // Synchronize billing address with shipping address when sameAsShipping is true
-  useEffect(() => {
-    if (watch("sameAsShipping")) {
-      setValue("billing.firstName", watch("shipping.firstName"));
-      setValue("billing.lastName", watch("shipping.lastName"));
-      setValue("billing.address1", watch("shipping.address1"));
-      setValue("billing.city", watch("shipping.city"));
-      setValue("billing.state", watch("shipping.state"));
-      setValue("billing.postcode", watch("shipping.postcode"));
-      setValue("billing.country", watch("shipping.country"));
-    }
-  }, [
-    watch("sameAsShipping"),
-    watch("shipping.firstName"),
-    watch("shipping.lastName"),
-    watch("shipping.address1"),
-    watch("shipping.city"),
-    watch("shipping.state"),
-    watch("shipping.postcode"),
-    watch("shipping.country"),
-    setValue,
-  ]);
-
   const selectedShippingCountry = watch("shipping.country");
   const selectedBillingCountry = watch("billing.country");
 
@@ -125,25 +102,64 @@ export default function CheckoutForm() {
     skip: !selectedBillingCountry || contents.nodes.length === 0,
   });
 
+  // Extract watch values for the first useEffect
+  const sameAsShipping = watch("sameAsShipping");
+  const shippingFirstName = watch("shipping.firstName");
+  const shippingLastName = watch("shipping.lastName");
+  const shippingAddress1 = watch("shipping.address1");
+  const shippingCity = watch("shipping.city");
+  const shippingState = watch("shipping.state");
+  const shippingPostcode = watch("shipping.postcode");
+  const shippingCountry = watch("shipping.country");
+
+  // Synchronize billing address with shipping address when sameAsShipping is true
   useEffect(() => {
-    if (
-      selectedShippingCountry &&
-      shippingStatesData &&
-      shippingStatesData.countryStates?.length === 0
-    ) {
+    if (sameAsShipping) {
+      setValue("billing.firstName", shippingFirstName);
+      setValue("billing.lastName", shippingLastName);
+      setValue("billing.address1", shippingAddress1);
+      setValue("billing.city", shippingCity);
+      setValue("billing.state", shippingState);
+      setValue("billing.postcode", shippingPostcode);
+      setValue("billing.country", shippingCountry);
+    }
+  }, [
+    sameAsShipping,
+    shippingFirstName,
+    shippingLastName,
+    shippingAddress1,
+    shippingCity,
+    shippingState,
+    shippingPostcode,
+    shippingCountry,
+    setValue,
+  ]);
+
+  // Extract condition for shipping states
+  const hasNoShippingStates =
+    selectedShippingCountry &&
+    shippingStatesData &&
+    shippingStatesData.countryStates?.length === 0;
+
+  // Set shipping state to "N/A" if no states are available
+  useEffect(() => {
+    if (hasNoShippingStates) {
       setValue("shipping.state", "N/A");
     }
-  }, [selectedShippingCountry, shippingStatesData, setValue]);
+  }, [hasNoShippingStates, setValue]);
 
+  // Extract condition for billing states
+  const hasNoBillingStates =
+    selectedBillingCountry &&
+    billingStatesData &&
+    billingStatesData.countryStates?.length === 0;
+
+  // Set billing state to "N/A" if no states are available
   useEffect(() => {
-    if (
-      selectedBillingCountry &&
-      billingStatesData &&
-      billingStatesData.countryStates?.length === 0
-    ) {
+    if (hasNoBillingStates) {
       setValue("billing.state", "N/A");
     }
-  }, [selectedBillingCountry, billingStatesData, setValue]);
+  }, [hasNoBillingStates, setValue]);
 
   const [createOrder, { error }] = useMutation(CREATE_ORDER_MUTATION);
 
@@ -208,7 +224,11 @@ export default function CheckoutForm() {
             body: JSON.stringify(orderData),
           });
           const result = await request.json();
-          await createCheckoutSessionAndRedirect(result.orderId, contents.nodes, variables);
+          await createCheckoutSessionAndRedirect(
+            result.orderId,
+            contents.nodes,
+            variables
+          );
         } catch (error) {
           console.error("Handle create order error", error);
         }
@@ -219,6 +239,7 @@ export default function CheckoutForm() {
       });
       console.error("Error creating order:", err);
     } finally {
+      await clearCart();
       setIsSubmittingOrder(false);
     }
   };
