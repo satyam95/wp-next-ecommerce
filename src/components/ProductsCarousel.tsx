@@ -47,7 +47,7 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
           {data?.products?.edges?.slice(0, 4).map((product: any) => (
             <div key={product.node.id}>
               <Link href={`product/${product.node.slug}`}>
-                  <Card>
+                  <Card className="rounded-md">
                     <Image
                       alt={
                         product.node.image === null ||
@@ -55,14 +55,14 @@ export const ProductsCarousel = ({ title, catSlug }: PropsType) => {
                           ? "Product Image"
                           : product.node.image.altText
                       }
-                      className="object-cover w-full aspect-square rounded-t-lg"
-                      height={300}
+                      className="object-cover w-full rounded-t-md"
+                      height={408}
                       src={
                         product.node.image === null
                           ? "/placeholder.svg"
                           : product.node.image.sourceUrl
                       }
-                      width={300}
+                      width={324}
                     />
                     <CardContent className="p-2 xl:p-4">
                       <h3 className="text-sm md:text-base xl:text-lg font-semibold tracking-tight">

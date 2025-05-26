@@ -40,7 +40,7 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const client = getServerApolloClient();
-  const productsPerPage = 9;
+  const productsPerPage = 12;
   const currentPage = parseInt((searchParams.page as string) || "1", 10);
   const afterCursor = searchParams.after as string | undefined;
 

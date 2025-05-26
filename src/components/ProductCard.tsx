@@ -27,11 +27,11 @@ const ProductCard = ({ title, excerpt, price, slug, image, rating }: PropsType) 
       <Link href={`/product/${slug}`}>
         <Image
           alt={image?.altText || "Product Image"}
-          className="w-full h-60 object-cover"
-          height={300}
+          className="w-full object-cover"
+          height={408}
           src={image?.sourceUrl || "/placeholder.svg"}
-          style={{ aspectRatio: "400/300", objectFit: "cover" }}
-          width={400}
+          style={{ objectFit: "cover" }}
+          width={324}
         />
       </Link>
       <div className="p-4 space-y-2">
