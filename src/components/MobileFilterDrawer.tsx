@@ -51,7 +51,7 @@ export default function MobileFilterDrawer({
         </div>
 
         <div className="flex-1 overflow-y-auto px-4">
-          <div className="border-t border-gray-200 dark:border-gray-700">
+          <div className="border-t border-gray-200">
             <FiltersClient
               categories={categories}
               sizeAttribute={sizeAttribute}
@@ -67,7 +67,7 @@ export default function MobileFilterDrawer({
           </div>
         </div>
 
-        {/* <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-950 px-4 py-4 mt-auto">
+        {/* <div className="border-t border-gray-200 bg-white px-4 py-4 mt-auto">
           <Button
             className="w-full"
             onClick={() => {

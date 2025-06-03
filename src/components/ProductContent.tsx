@@ -72,7 +72,7 @@ export default function ProductContent({ slug }: { slug: string }) {
                       {attribute.terms.nodes.map((term: any) => (
                         <Label
                           key={term.id}
-                          className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100 dark:[&:has(:checked)]:bg-gray-800"
+                          className="border cursor-pointer rounded-md p-2 flex items-center gap-2 [&:has(:checked)]:bg-gray-100"
                           htmlFor={term.id}
                         >
                           <RadioGroupItem id={term.id} value={term.slug} />

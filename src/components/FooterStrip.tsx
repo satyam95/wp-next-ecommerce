@@ -8,7 +8,7 @@ const FooterStrip = () => {
           <CalendarIcon className="w-8 h-8 text-primary" />
           <div>
             <h3 className="font-semibold">Preferred Time Slot</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               Choose a convenient time for delivery
             </p>
           </div>
@@ -17,7 +17,7 @@ const FooterStrip = () => {
           <TruckIcon className="w-8 h-8 text-primary" />
           <div>
             <h3 className="font-semibold">Delivery in 700+ Cities</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               We deliver to all major cities
             </p>
           </div>
@@ -26,7 +26,7 @@ const FooterStrip = () => {
           <UsersIcon className="w-8 h-8 text-primary" />
           <div>
             <h3 className="font-semibold">20 Million People Trust</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               Our customers love our service
             </p>
           </div>
@@ -35,7 +35,7 @@ const FooterStrip = () => {
           <LocateIcon className="w-8 h-8 text-primary" />
           <div>
             <h3 className="font-semibold">180+ Pincodes Serviced</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               We deliver to all major pincodes
             </p>
           </div>

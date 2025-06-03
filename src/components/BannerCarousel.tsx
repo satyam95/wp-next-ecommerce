@@ -41,16 +41,15 @@ export const BannerCarousel = () => {
             {data?.bannerCarousels.edges.length > 0 ? (
               data?.bannerCarousels.edges.map((item: any) => (
                 <SwiperSlide key={item.node.id}>
-                  <Image
-                    src={item.node.featuredImage.node.sourceUrl}
-                    alt={
-                      item.node.featuredImage.node.altText || "Ad Banner"
-                    }
-                    width={1336}
-                    height={320}
-                    priority
-                    className="object-fit rounded-md"
-                  />
+                  <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px]">
+                    <Image
+                      src={item.node.featuredImage.node.sourceUrl}
+                      alt={item.node.featuredImage.node.altText || "Ad Banner"}
+                      fill
+                      priority
+                      className="object-cover rounded-md"
+                    />
+                  </div>
                 </SwiperSlide>
               ))
             ) : (

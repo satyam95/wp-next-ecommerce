@@ -74,7 +74,7 @@ export default function FiltersClient({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-950 rounded-lg py-6 lg:space-y-6">
+    <div className="bg-white rounded-lg py-6 lg:space-y-6">
       <h3 className="hidden lg:block text-lg font-semibold">Filters</h3>
       <div className="lg:mt-4 space-y-4">
         {/* Category Filter (only if categories are provided) */}

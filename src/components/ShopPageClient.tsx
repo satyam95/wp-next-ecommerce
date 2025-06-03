@@ -112,7 +112,7 @@ export default function ShopPageClient({
     <div className="grid gap-8">
       <div className="text-center">
         <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-gray-500 mt-2">
           Browse our full range of products.
         </p>
       </div>

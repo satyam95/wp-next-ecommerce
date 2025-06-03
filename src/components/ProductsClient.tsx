@@ -113,7 +113,8 @@ export default function ProductsClient({
   };
 
   // Extract current filter values
-  const urlSort = typeof searchParams.sort === "string" ? searchParams.sort : "";
+  const urlSort =
+    typeof searchParams.sort === "string" ? searchParams.sort : "";
 
   return (
     <div>
@@ -135,9 +136,15 @@ export default function ProductsClient({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="priceHighToLow">Price: High to Low</SelectItem>
-                  <SelectItem value="priceLowToHigh">Price: Low to High</SelectItem>
-                  <SelectItem value="customerRating">Customer Rating</SelectItem>
+                  <SelectItem value="priceHighToLow">
+                    Price: High to Low
+                  </SelectItem>
+                  <SelectItem value="priceLowToHigh">
+                    Price: Low to High
+                  </SelectItem>
+                  <SelectItem value="customerRating">
+                    Customer Rating
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -152,25 +159,26 @@ export default function ProductsClient({
           currentMaxPrice !== undefined) && (
           <div className="flex flex-wrap gap-2 items-center">
             <h4 className="text-base font-semibold">Active filters:</h4>
-            {currentCategories && currentCategories.map((category) => (
-              <div
-                key={category}
-                className="flex items-center text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-full"
-              >
-                <span>{category}</span>
-                <button
-                  type="button"
-                  onClick={() => handleCategoryRemove(category)}
-                  className="ml-1 text-xs font-bold"
+            {currentCategories &&
+              currentCategories.map((category) => (
+                <div
+                  key={category}
+                  className="flex items-center text-sm bg-gray-200 text-gray-800 px-2 py-1 rounded-full"
                 >
-                  ×
-                </button>
-              </div>
-            ))}
+                  <span>{category}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleCategoryRemove(category)}
+                    className="ml-1 text-xs font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             {currentSizes.map((size) => (
               <div
                 key={size}
-                className="flex items-center text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-full"
+                className="flex items-center text-sm bg-gray-200 text-gray-800 px-2 py-1 rounded-full"
               >
                 <span>{size}</span>
                 <button
@@ -185,7 +193,7 @@ export default function ProductsClient({
             {currentColors.map((color) => (
               <div
                 key={color}
-                className="flex items-center text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-full"
+                className="flex items-center text-sm bg-gray-200 text-gray-800 px-2 py-1 rounded-full"
               >
                 <span>{color}</span>
                 <button
@@ -197,11 +205,15 @@ export default function ProductsClient({
                 </button>
               </div>
             ))}
-            {(currentMinPrice !== undefined || currentMaxPrice !== undefined) && (
-              <div className="flex items-center text-sm bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-full">
+            {(currentMinPrice !== undefined ||
+              currentMaxPrice !== undefined) && (
+              <div className="flex items-center text-sm bg-gray-200 text-gray-800 px-2 py-1 rounded-full">
                 <span>
-                  {currentMinPrice !== undefined ? `$${currentMinPrice}` : "$0"} -{" "}
-                  {currentMaxPrice !== undefined ? `$${currentMaxPrice}` : "$100"}
+                  {currentMinPrice !== undefined ? `$${currentMinPrice}` : "$0"}{" "}
+                  -{" "}
+                  {currentMaxPrice !== undefined
+                    ? `$${currentMaxPrice}`
+                    : "$100"}
                 </span>
                 <button
                   type="button"

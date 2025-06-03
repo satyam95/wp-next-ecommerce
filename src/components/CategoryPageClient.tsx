@@ -75,13 +75,13 @@ export default function CategoryPageClient({
     return (
       <div className="grid gap-8">
         <div className="text-center">
-          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto" />
-          <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-auto mt-2" />
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto" />
+          <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse mx-auto mt-2" />
         </div>
         <div className="grid md:grid-cols-[280px_1fr] gap-8">
           <FiltersSkeleton />
           <div>
-            <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4" />
+            <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-4" />
             <ProductsGridSkeleton />
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function CategoryPageClient({
         <h1 className="text-3xl font-bold tracking-tight">
           {categoryNode.name}
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
+        <p className="text-gray-500 mt-2">
           {categoryNode.description}
         </p>
       </div>

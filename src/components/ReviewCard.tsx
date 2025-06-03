@@ -28,7 +28,7 @@ const ReviewCard = ({
         <div className="flex gap-4 items-start">
           <div className="grid gap-0.5 text-sm">
             <h3 className="font-semibold">{authorName}</h3>
-            <time className="text-sm text-gray-500 dark:text-gray-400">
+            <time className="text-sm text-gray-500">
               {daysAgo(postedDate)}
             </time>
           </div>

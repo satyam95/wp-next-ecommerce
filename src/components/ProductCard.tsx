@@ -36,7 +36,7 @@ const ProductCard = ({ title, excerpt, price, slug, image, rating }: PropsType) 
       </Link>
       <div className="p-4 space-y-2">
         <h3 className="text-base sm:text-lg font-semibold">{title}</h3>
-        <div className="hidden sm:block text-gray-500 dark:text-gray-400 text-sm">
+        <div className="hidden sm:block text-gray-500 text-sm">
           {truncatedDescription}
         </div>
         <div className="flex items-center justify-between">

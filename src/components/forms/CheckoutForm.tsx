@@ -247,10 +247,10 @@ export default function CheckoutForm() {
   // Display message if cart is empty
   if (contents.nodes.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl font-semibold mb-4">Your cart is empty</p>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-gray-600 mb-4">
             Please add products to your cart before checking out.
           </p>
           <Button onClick={() => router.push("/shop")}>Shop Now</Button>
@@ -260,10 +260,7 @@ export default function CheckoutForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="min-h-screen bg-gray-50 dark:bg-gray-900"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12">
         <div className="flex items-center gap-3 mb-6 sm:mb-8">
           <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8" />
@@ -671,19 +668,15 @@ export default function CheckoutForm() {
                   <Separator className="my-4" />
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <p className="text-gray-500 dark:text-gray-400">
-                        Subtotal
-                      </p>
+                      <p className="text-gray-500">Subtotal</p>
                       <p className="font-medium">{subtotal}</p>
                     </div>
                     <div className="flex justify-between">
-                      <p className="text-gray-500 dark:text-gray-400">
-                        Shipping
-                      </p>
+                      <p className="text-gray-500">Shipping</p>
                       <p className="font-medium">{shippingTotal}</p>
                     </div>
                     <div className="flex justify-between">
-                      <p className="text-gray-500 dark:text-gray-400">Tax</p>
+                      <p className="text-gray-500">Tax</p>
                       <p className="font-medium">{totalTax}</p>
                     </div>
                     <Separator />
