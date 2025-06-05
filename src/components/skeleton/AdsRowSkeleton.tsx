@@ -8,7 +8,7 @@ const AdsRowSkeleton = () => {
           {[...Array(3)].map((_, index) => (
             <div
               key={index}
-              className="w-full h-[162px] sm:h-[745px] bg-gray-200 rounded-lg animate-pulse"
+              className="w-full h-[144px] sm:h-[280px] lg:h-[386px] xl:h-[550px] bg-gray-200 rounded-lg animate-pulse"
             />
           ))}
         </div>

@@ -8,9 +8,9 @@ const CategoryRowSkeleton = () => {
           {[...Array(9)].map((_, index) => (
             <div
               key={index}
-              className="min-w-28 flex flex-col items-center gap-2 bg-white rounded-lg"
+              className="min-w-20 sm:min-w-28 flex flex-col items-center gap-2 bg-white rounded-lg"
             >
-              <div className="w-full h-28 bg-gray-200 rounded-md animate-pulse" />
+              <div className="w-full h-20 sm:h-28 bg-gray-200 rounded-md animate-pulse" />
               <div className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
             </div>
           ))}
