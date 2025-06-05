@@ -41,7 +41,7 @@ export const BannerCarousel = () => {
             {data?.bannerCarousels.edges.length > 0 ? (
               data?.bannerCarousels.edges.map((item: any) => (
                 <SwiperSlide key={item.node.id}>
-                  <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px]">
+                  <div className="relative w-full h-[168px] sm:h-[396px] lg:h-[540px] xl:h-[760px]">
                     <Image
                       src={item.node.featuredImage.node.sourceUrl}
                       alt={item.node.featuredImage.node.altText || "Ad Banner"}

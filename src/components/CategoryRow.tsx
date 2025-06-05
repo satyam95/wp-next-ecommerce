@@ -59,7 +59,7 @@ const CategoryRow = () => {
         <div className="relative">
           <div
             ref={scroller}
-            className="flex overflow-x-auto overflow-y-hidden gap-7 py-2 md:gap-2.5 lg:gap-8"
+            className="flex overflow-x-auto overflow-y-hidden gap-5 sm:gap-7 py-2 md:gap-2.5 lg:gap-8"
           >
             {data?.productCategories?.nodes.map((item: Item) => (
               <CategoryCard
