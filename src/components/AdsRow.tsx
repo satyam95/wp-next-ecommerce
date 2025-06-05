@@ -17,9 +17,11 @@ const AdsRow = () => {
       <div className="container w-full px-4 md:px-6">
         <div className="flex justify-between gap-4">
           {data?.homeBanners?.edges.map((item: any) => (
-            <div className="relative w-full h-[144px] sm:h-[280px] lg:h-[386px] xl:h-[550px]">
+            <div
+              key={item?.node.bannerField.bannerimage.altText}
+              className="relative w-full h-[144px] sm:h-[280px] lg:h-[386px] xl:h-[550px]"
+            >
               <Image
-                key={item?.node.bannerField.bannerimage.altText}
                 src={item?.node.bannerField.bannerimage.sourceUrl}
                 alt={
                   item?.node.bannerField.bannerimage.altText || "Ad Banner 1"
